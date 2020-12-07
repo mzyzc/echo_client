@@ -1,4 +1,4 @@
-# echo_client
+# Echo
 
 A client for the Echo secure messenger.
 
