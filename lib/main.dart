@@ -1,40 +1,75 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Echo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Echo'),
-        ),
-        body: DefaultTextStyle(
-          style: TextStyle(fontSize: 20, color: Colors.black),
-          child: ListView(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text('Hello there!'),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Text('Hey'),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text('How\'s it going?'),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Text('Great'),
-              ),
-            ]
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: HomePage(title: 'Echo'),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'This is the message area',
+    ),
+    Text(
+      'This is the settings area',
+    ),
+  ];
+  
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Add contact',
+        child: Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message),
+            label: 'Messages',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }
