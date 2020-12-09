@@ -29,13 +29,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'This is the message area',
-    ),
-    Text(
-      'This is the settings area',
-    ),
+  static List<Widget> _widgetOptions = <Widget>[
+    MessagesPage(),
+    SettingsPage(),
   ];
   
   void _onItemTapped(int index) {
@@ -53,10 +49,6 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Add contact',
-        child: Icon(Icons.add),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -70,6 +62,36 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class MessagesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('This is the messages section'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _noticeClick,
+        tooltip: 'Add contact',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+  
+  void _noticeClick() {
+    print('button clicked');
+  }
+}
+class SettingsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('This is the settings section'),
       ),
     );
   }
