@@ -67,12 +67,29 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class ContactsList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      child: ListView.builder(
+          itemCount: 100,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Person ${index + 1}'),
+            );
+          }
+      ),
+    );
+  }
+}
+
 class MessagesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('This is the messages section'),
+        child: ContactsList(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _noticeClick,
