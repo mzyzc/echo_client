@@ -1,4 +1,4 @@
-import 'package:echo_client/message.dart';
+import 'package:echo_client/send.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -93,7 +93,7 @@ class MessagesPage extends StatelessWidget {
         child: ContactsList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){initNewUser();},
+        onPressed: () => initNewUser(),
         tooltip: 'Add contact',
         child: Icon(Icons.add),
       ),
