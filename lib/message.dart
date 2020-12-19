@@ -3,65 +3,73 @@ import 'dart:convert';
 import 'package:cryptography_flutter/cryptography.dart';
 
 class Message {
-  var text;
-  var mediaType;
-  var timestamp;
-  var senderID;
-  var signature;
+  String text;
+  String mediaType;
+  Signature signature;
+  DateTime _timestamp;
 
-  void compose(String message, String mediaType) {
-    // TODO
+  void initialize(String text, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
+    this.text = await _convert(text, sessionKey);
+    this.mediaType = mediaType;
+    this._timestamp = new DateTime.now();
+    this.signature = await _sign(text, signKeys);
   }
-  void encrypt(var sessionKey) {
-    // TODO
+  Future<String> _convert(String text, var sessionKey) async {
+    const cipher = CipherWithAppendedMac(aesCtr, Hmac(sha256));
+    final nonce = cipher.newNonce();
+    
+    return cipher.encrypt(
+      utf8.encode(text),
+      secretKey: sessionKey,
+      nonce: nonce,
+    ).toString();
   }
-  void decrypt(var sessionKey) {
-    // TODO
+  Future<Signature> _sign(String text, KeyPair signKeys) async {
+    final digest = await ed25519.sign(utf8.encode(text), signKeys).toString();
+    return Signature(utf8.encode(digest));
   }
-  Future<String> sign(KeyPair signKey) async {
-    final digest = await ed25519.sign(this.text, signKey).toString();
-    return digest;
-  }
-  Future<bool> verifySignature(var sigPubKey) async {
-    final digest = await sign(sigPubKey);
-    final verified = await ed25519.verify(utf8.encode(digest), signature);
+  Future<bool> _verifySignature(String text, Signature signature, KeyPair signKeys) async {
+    final digest = await _sign(text, signKeys);
+    final verified = await ed25519.verify(digest.bytes, signature);
     return verified;
   }
-  void send(var data) {
-    this.timestamp = new DateTime.now();
-    // TODO
-
+  void send() {
     var messageData = '''
       "message" [
         {
           "text": "${this.text}",
           "mediaType": "${this.mediaType}",
-          "timestamp": "${this.timestamp}",
-          "senderID": "${this.senderID}",
+          "timestamp": "${this._timestamp}",
           "signature": "${this.signature}",
         }
       ]
     ''';
     var messageObject = jsonEncode(messageData);
-    // TODO
+
+    print(messageObject);
+    Socket.connect(InternetAddress.lookup('czyz.xyz'), 63100).then((socket) {
+      socket.write(messageObject);
+    });
   }
 }
 
-class Keychain {
+class Keyring {
   var exchangePair;
   var signingPair;
 
-  Keychain() {
-    createExchangePair();
-    createSigningPair();
+  Keyring() {
+    _createExchangePair();
+    print('Exchange key pair generated!');
+    _createSigningPair();
+    print('Signing key pair generated!');
   }
-  void createExchangePair() async {
+  Future<KeyPair> _createExchangePair() async {
     final exchangeKeyPair = await x25519.newKeyPair();
-    this.exchangePair = exchangeKeyPair;
+    return exchangeKeyPair;
   }
-  void createSigningPair() async {
+  Future<KeyPair> _createSigningPair() async {
     final signingKeyPair = await ed25519.newKeyPair();
-    this.signingPair = signingKeyPair;
+    return signingKeyPair;
   }
   Future<SecretKey> createSessionKey(remotePubKey) async {
     var sessionKey = await x25519.sharedSecret(
@@ -73,6 +81,9 @@ class Keychain {
 }
 
 Future<void> initNewUser() async {
-  var keys =  new Keychain();
-  // TODO
+  var keys = new Keyring();
+  var message = new Message();
+  message.initialize("This is a message", "text/plain", keys.exchangePair.PublicKey, keys.signingPair.privateKey);
+  print(message.text);
+  message.send();
 }
