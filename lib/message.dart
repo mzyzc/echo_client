@@ -8,7 +8,7 @@ class Message {
   Signature signature;
   DateTime _timestamp;
 
-  void initialize(String text, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
+  Future<void> initialize(String text, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
     this.text = text;
     this.text = await _convert(sessionKey);
     print("text set");
@@ -31,7 +31,7 @@ class Message {
   }
   Future<Signature> _sign(KeyPair signKeys) async {
     final digest = await ed25519.sign(utf8.encode(text), signKeys).toString();
-    return Signature(utf8.encode(digest));
+    return Signature(utf8.encode(digest), publicKey: signKeys.publicKey);
   }
   Future<bool> _verifySignature(Signature signature, KeyPair signKeys) async {
     final digest = await _sign(signKeys);
