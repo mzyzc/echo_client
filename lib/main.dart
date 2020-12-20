@@ -1,8 +1,27 @@
-import 'package:echo_client/send.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:cryptography_flutter/cryptography.dart';
+import 'package:echo_client/message.dart';
+import 'package:echo_client/keys.dart';
 
 void main() {
   runApp(MyApp());
+  initNewUser();
+}
+
+Future<void> initNewUser() async {
+  final keys = new Keyring()
+  ..genKeys();
+  await keys.export();
+}
+
+Future<void> newMessage() async {
+  final keys = new Keyring();
+  await keys.import();
+  var tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
+  var message = new Message();
+  message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
+  message.send();
 }
 
 class MyApp extends StatelessWidget {
@@ -93,7 +112,7 @@ class MessagesPage extends StatelessWidget {
         child: ContactsList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => initNewUser(),
+        onPressed: () => newMessage(),
         tooltip: 'Add contact',
         child: Icon(Icons.add),
       ),

@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:cryptography_flutter/cryptography.dart';
 
 class Message {
-  String text;
+  List<int> data;
   String mediaType;
   Signature signature;
   DateTime _timestamp;
 
-  Future<void> initialize(String text, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
-    this.text = text;
-    this.text = await _convert(sessionKey);
+  Future<void> initialize(List<int> data, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
+    this.data = data;
+    this.data = await _convert(sessionKey);
     print("text set");
     this.mediaType = mediaType;
     print("mediatype set");
@@ -19,18 +19,18 @@ class Message {
     this.signature = await _sign(signKeys);
     print("signature set");
   }
-  Future<String> _convert(SecretKey sessionKey) async {
+  Future<List<int>> _convert(SecretKey sessionKey) async {
     const cipher = CipherWithAppendedMac(aesCtr, Hmac(sha256));
     final nonce = cipher.newNonce();
     
     return cipher.encrypt(
-      utf8.encode(text),
+      data,
       secretKey: sessionKey,
       nonce: nonce,
-    ).toString();
+    );
   }
   Future<Signature> _sign(KeyPair signKeys) async {
-    final digest = await ed25519.sign(utf8.encode(text), signKeys).toString();
+    final digest = await ed25519.sign(data, signKeys).toString();
     return Signature(utf8.encode(digest), publicKey: signKeys.publicKey);
   }
   Future<bool> _verifySignature(Signature signature, KeyPair signKeys) async {
@@ -42,7 +42,7 @@ class Message {
     var messageData = '''
       "message" [
         {
-          "text": "${text}",
+          "data": "${utf8.decode(data)}",
           "mediaType": "${mediaType}",
           "timestamp": "${_timestamp}",
           "signature": "${signature}",
@@ -52,8 +52,10 @@ class Message {
     var messageObject = jsonEncode(messageData);
 
     print(messageObject);
+    /*
     Socket.connect(InternetAddress.lookup('czyz.xyz'), 63100).then((socket) {
       socket.write(messageObject);
     });
+     */
   }
 }
