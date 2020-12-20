@@ -14,6 +14,7 @@ Future<void> newMessage() async {
   await keys.import();
   var tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
   var message = new Message();
-  message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
+  await message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
+  await message.sign(keys.signingPair);
   message.send();
 }
