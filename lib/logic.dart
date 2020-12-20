@@ -12,8 +12,9 @@ Future<void> initNewUser() async {
 Future<void> newMessage() async {
   final keys = new Keyring();
   await keys.import();
-  var tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
-  var message = new Message();
+  final tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
+
+  final message = new Message();
   await message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
   await message.sign(keys.signingPair);
   message.send();
