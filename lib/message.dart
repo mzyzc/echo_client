@@ -35,7 +35,7 @@ class Message {
     return await ed25519.verify(digest, signature);
   }
 
-  void send() {
+  void send(String host) {
     final messageData = jsonEncode('''
       "message" [
         {
@@ -48,10 +48,8 @@ class Message {
     ''');
     print(messageData);
 
-    /*
-    Socket.connect(InternetAddress.lookup('czyz.xyz'), 63100).then((socket) {
-      socket.write(messageObject);
+    Socket.connect(host, 63100).then((socket) {
+      socket.write(messageData);
     });
-     */
   }
 }

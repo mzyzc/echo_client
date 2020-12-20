@@ -17,5 +17,5 @@ Future<void> newMessage() async {
   final message = new Message();
   await message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
   await message.sign(keys.signingPair);
-  message.send();
+  message.send('czyz.xyz');
 }
