@@ -29,6 +29,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Echo',
+      initialRoute: '/',
+      routes: {
+        '/messages': (context) => MessagesPage(),
+      },
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -50,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    MessagesPage(),
+    ContactsPage(),
     SettingsPage(),
   ];
   
@@ -72,8 +76,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
+            icon: Icon(Icons.person),
+            label: 'Contacts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
@@ -97,6 +101,9 @@ class ContactsList extends StatelessWidget {
             return ListTile(
               leading: Icon(Icons.person),
               title: Text('Person ${index + 1}'),
+              onTap: () {
+                Navigator.pushNamed(context, '/messages');
+              },
             );
           }
       ),
@@ -104,7 +111,7 @@ class ContactsList extends StatelessWidget {
   }
 }
 
-class MessagesPage extends StatelessWidget {
+class ContactsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +119,7 @@ class MessagesPage extends StatelessWidget {
         child: ContactsList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => newMessage(),
+        onPressed: () => print('Contact added'),
         tooltip: 'Add contact',
         child: Icon(Icons.add),
       ),
@@ -120,6 +127,27 @@ class MessagesPage extends StatelessWidget {
   }
   
 }
+
+class MessagesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('John Doe'),
+      ),
+      body: Center(
+        child: Text('This is the messages section')
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => newMessage(),
+        tooltip: 'Send message',
+        child: Icon(Icons.message),
+      ),
+    );
+  }
+
+}
+
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
