@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:echo_client/socket.dart';
 
 class Message {
   List<int> data;
@@ -35,7 +36,7 @@ class Message {
     return await ed25519.verify(digest, signature);
   }
 
-  void send(String host) {
+  void send() {
     final messageData = jsonEncode('''
       "message" [
         {
@@ -47,9 +48,6 @@ class Message {
       ]
     ''');
     print(messageData);
-
-    Socket.connect(host, 63100).then((socket) {
-      socket.write(messageData);
-    });
+    DataSocket.socket.write(messageData);
   }
 }

@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:echo_client/message.dart';
 import 'package:echo_client/keys.dart';
+import 'package:echo_client/socket.dart';
 
 Future<void> initNewUser() async {
+  DataSocket.init('czyz.xyz');
   final keys = new Keyring()
     ..genKeys();
   await keys.export();
@@ -17,5 +19,5 @@ Future<void> newMessage() async {
   final message = new Message();
   await message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
   await message.sign(keys.signingPair);
-  message.send('czyz.xyz');
+  message.send();
 }
