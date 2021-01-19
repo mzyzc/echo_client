@@ -6,13 +6,13 @@ import 'package:echo_client/server.dart';
 class Message {
   List<int> data;
   String mediaType;
-  Signature signature;
+  Signature _signature;
   DateTime _timestamp;
 
-  Future<void> initialize(List<int> data, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
-    this.data = await _convert(data, sessionKey);
+  Future<void> initialize(List<int> data, String mediaType) async {
+    this.data = data;
     this.mediaType = mediaType;
-    this._timestamp = new DateTime.now();
+    this._timestamp = new DateTime.now().toUtc();
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
@@ -28,22 +28,27 @@ class Message {
 
   Future<void> sign(KeyPair signKeys) async {
     final digest = (await ed25519.sign(data, signKeys)).bytes;
-    this.signature = Signature(digest, publicKey: signKeys.publicKey);
+    this._signature = Signature(digest, publicKey: signKeys.publicKey);
   }
 
   Future<bool> verifySignature(KeyPair signKeys) async {
     final digest = (await ed25519.sign(data, signKeys)).bytes;
-    return await ed25519.verify(digest, signature);
+    return await ed25519.verify(digest, _signature);
   }
 
-  void send() {
+  Future<void> send(SecretKey sessionKey) async {
+    final enData = await _convert(data, sessionKey);
+    final enMediaType = await _convert(utf8.encode(mediaType), sessionKey);
+    final enTimestamp = await _convert(utf8.encode(_timestamp.toIso8601String()), sessionKey);
+    final enSignature = _signature.bytes;
+
     final messageData = jsonEncode('''
       "message" [
         {
-          "data": "$data",
-          "mediaType": "$mediaType",
-          "timestamp": "$_timestamp",
-          "signature": "${signature.bytes}",
+          "data": "$enData",
+          "mediaType": "$enMediaType",
+          "timestamp": "$enTimestamp",
+          "signature": "$enSignature",
         }
       ]
     ''');
@@ -58,7 +63,8 @@ Future<void> newMessage() async {
   final tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
 
   final message = new Message();
-  await message.initialize(utf8.encode("This is a message"), "text/plain", tempSessionKey, keys.signingPair);
+  final messageData = utf8.encode("This is a message"); // for testing purposes only
+  await message.initialize(messageData, "text/plain");
   await message.sign(keys.signingPair);
-  message.send();
+  message.send(tempSessionKey);
 }
