@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:echo_client/logic.dart';
 import 'package:echo_client/pages/contacts.dart';
+import 'package:echo_client/pages/login.dart';
 import 'package:echo_client/pages/messages.dart';
 import 'package:echo_client/pages/settings.dart';
+import 'package:echo_client/server.dart';
 
 void main() {
+  Server.init('czyz.xyz');
   runApp(MyApp());
-  initNewUser();
 }
 
 class MyApp extends StatelessWidget {
@@ -14,14 +15,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Echo',
+      initialRoute: '/login',
       routes: {
+        '/': (context) => HomePage(title: 'Echo'),
+        '/login': (context) => LoginPage(),
         '/messages': (context) => MessagesPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(title: 'Echo'),
     );
   }
 }
@@ -50,24 +53,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final navContacts = BottomNavigationBarItem(
+      icon: Icon(Icons.person),
+      label: 'Contacts',
+    );
+
+    final navSettings = BottomNavigationBarItem(
+      icon: Icon(Icons.settings),
+      label: 'Settings',
+    );
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-      ),
+          title: Text(widget.title),
+        ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Contacts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+        items: <BottomNavigationBarItem>[navContacts, navSettings],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),

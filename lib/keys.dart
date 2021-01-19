@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Keyring {
   KeyPair exchangePair;
