@@ -43,14 +43,13 @@ class Message {
     final enSignature = _signature.bytes;
 
     final messageData = jsonEncode('''
-      "message" [
         {
+          "function": "CREATE MESSAGE",
           "data": "${base64.encode(enData)}",
           "mediaType": "${base64.encode(enMediaType)}",
           "timestamp": "${base64.encode(enTimestamp)}",
           "signature": "${base64.encode(enSignature)}",
         }
-      ]
     ''');
     print(messageData);
     Server.socket.write(messageData);

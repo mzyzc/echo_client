@@ -16,14 +16,13 @@ class User {
     await _keys.export();
 
     final data = jsonEncode('''
-      "CREATE USER" [
         {
+          "function": "CREATE USER",
           "email": "${_email}",
+          "displayName": "${_displayName}",
           "password": "${_password}",
           "publicKey": "${base64.encode(_keys.exchangePair.publicKey.bytes)}",
-          "displayName": "${_displayName}",
         }
-      ]
     ''');
     print(data);
     Server.socket.write(data);
@@ -31,12 +30,11 @@ class User {
 
   Future<void> login() async {
     final data = jsonEncode('''
-      "READ USER" [
         {
+          "function": "READ USER",
           "email": "${_email}",
           "password": "${_password}",
         }
-      ]
     ''');
     print(data);
     Server.socket.write(data);
