@@ -40,7 +40,8 @@ class LoginPage extends StatelessWidget {
       child: Text('Register'),
       onPressed: () async {
         displayName = await requestDisplayName(context);
-        registerUser(username, password, displayName);
+        await registerUser(username, password, displayName);
+        Navigator.pushReplacementNamed(context, '/');
       }
     );
 

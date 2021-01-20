@@ -3,28 +3,29 @@ import 'package:echo_client/keys.dart';
 import 'package:echo_client/server.dart';
 
 class User {
-  String email;
+  String _email;
   String _password;
-  String displayName;
+  String _displayName;
   Keyring _keys;
 
-  User(this.email, this._password, this.displayName);
+  User(this._email, this._password, this._displayName);
 
   Future<void> register() async {
-    _keys = new Keyring()
-      ..genKeys();
+    _keys = new Keyring();
+    await _keys.genKeys();
     await _keys.export();
 
     final data = jsonEncode('''
       "CREATE USER" [
         {
-          "email": "${this.email}",
-          "password": "${this._password}",
-          "publicKey": "${this._keys.exchangePair.publicKey}",
-          "displayName": "${this.displayName}",
+          "email": "${_email}",
+          "password": "${_password}",
+          "publicKey": "${base64.encode(_keys.exchangePair.publicKey.bytes)}",
+          "displayName": "${_displayName}",
         }
       ]
     ''');
+    print(data);
     Server.socket.write(data);
   }
 
@@ -32,17 +33,17 @@ class User {
     final data = jsonEncode('''
       "READ USER" [
         {
-          "email": "${this.email}",
-          "password": "${this._password}",
+          "email": "${_email}",
+          "password": "${_password}",
         }
       ]
     ''');
+    print(data);
     Server.socket.write(data);
   }
 }
 
-void registerUser(String username, String password, String displayName) {
-  final newUser = User(username, password, displayName)
-      ..register;
-  print("user ${newUser.displayName} registered with email ${newUser.email}");
+Future<void> registerUser(String username, String password, String displayName) async {
+  final newUser = User(username, password, displayName);
+  await newUser.register();
 }

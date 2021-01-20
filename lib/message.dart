@@ -28,7 +28,7 @@ class Message {
 
   Future<void> sign(KeyPair signKeys) async {
     final digest = (await ed25519.sign(_data, signKeys)).bytes;
-    this._signature = Signature(digest, publicKey: signKeys.publicKey);
+    _signature = Signature(digest, publicKey: signKeys.publicKey);
   }
 
   Future<bool> verifySignature(KeyPair signKeys) async {
