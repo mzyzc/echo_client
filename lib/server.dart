@@ -1,12 +1,12 @@
 import 'dart:io';
 
-class DataSocket {
+class Server {
   static String host;
   static Socket socket;
   
   static init(String host) async {
-    DataSocket.host = host;
-    DataSocket.socket = await Socket.connect(host, 63100);
+    Server.host = host;
+    Server.socket = await Socket.connect(host, 63100);
     print('Connected to ${host}:63100');
   }
 }

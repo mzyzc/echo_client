@@ -1,18 +1,18 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:cryptography_flutter/cryptography.dart';
-import 'package:echo_client/socket.dart';
+import 'package:echo_client/keys.dart';
+import 'package:echo_client/server.dart';
 
 class Message {
-  List<int> data;
-  String mediaType;
-  Signature signature;
+  List<int> _data;
+  String _mediaType;
+  Signature _signature;
   DateTime _timestamp;
 
-  Future<void> initialize(List<int> data, String mediaType, SecretKey sessionKey, KeyPair signKeys) async {
-    this.data = await _convert(data, sessionKey);
-    this.mediaType = mediaType;
-    this._timestamp = new DateTime.now();
+  Future<void> compose(List<int> data, String mediaType) async {
+    this._data = data;
+    this._mediaType = mediaType;
+    this._timestamp = new DateTime.now().toUtc();
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
@@ -27,27 +27,44 @@ class Message {
   }
 
   Future<void> sign(KeyPair signKeys) async {
-    final digest = (await ed25519.sign(data, signKeys)).bytes;
-    this.signature = Signature(digest, publicKey: signKeys.publicKey);
+    final digest = (await ed25519.sign(_data, signKeys)).bytes;
+    this._signature = Signature(digest, publicKey: signKeys.publicKey);
   }
 
   Future<bool> verifySignature(KeyPair signKeys) async {
-    final digest = (await ed25519.sign(data, signKeys)).bytes;
-    return await ed25519.verify(digest, signature);
+    final digest = (await ed25519.sign(_data, signKeys)).bytes;
+    return await ed25519.verify(digest, _signature);
   }
 
-  void send() {
+  Future<void> send(SecretKey sessionKey) async {
+    final enData = await _convert(_data, sessionKey);
+    final enMediaType = await _convert(utf8.encode(_mediaType), sessionKey);
+    final enTimestamp = await _convert(utf8.encode(_timestamp.toIso8601String()), sessionKey);
+    final enSignature = _signature.bytes;
+
     final messageData = jsonEncode('''
       "message" [
         {
-          "data": "$data",
-          "mediaType": "$mediaType",
-          "timestamp": "$_timestamp",
-          "signature": "${signature.bytes}",
+          "data": "${base64.encode(enData)}",
+          "mediaType": "${base64.encode(enMediaType)}",
+          "timestamp": "${base64.encode(enTimestamp)}",
+          "signature": "${base64.encode(enSignature)}",
         }
       ]
     ''');
     print(messageData);
-    DataSocket.socket.write(messageData);
+    Server.socket.write(messageData);
   }
+}
+
+Future<void> newMessage() async {
+  final keys = new Keyring();
+  await keys.import();
+  final tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
+
+  final message = new Message();
+  final messageData = utf8.encode("This is a message"); // for testing purposes only
+  await message.compose(messageData, "text/plain");
+  await message.sign(keys.signingPair);
+  await message.send(tempSessionKey);
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:echo_client/logic.dart';
+import 'package:echo_client/message.dart';
 
 class MessagesPage extends StatelessWidget {
   @override
@@ -14,7 +14,7 @@ class MessagesPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => newMessage(),
         tooltip: 'Send message',
-        child: Icon(Icons.message),
+        child: Icon(Icons.send),
       ),
     );
   }
