@@ -23,8 +23,8 @@ class MessagesPage extends StatelessWidget {
                   return Directionality(
                     textDirection: altDirection[index % 2],
                     child: ListTile(
-                      leading: Icon(Icons.person),
-                      title: Text('Message ${index + 1}'),
+                      title: Text('This is an example message functioning as a proof of concept'),
+                      subtitle: Text('11:32'),
                     ),
                   );
                 }
@@ -36,18 +36,24 @@ class MessagesPage extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: TextField(
-                    onChanged: (text) => messageText = text,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Write a message...',
-                    )
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextField(
+                      onChanged: (text) => messageText = text,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Write a message...',
+                      )
+                    ),
+                  )
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child:ElevatedButton(
+                    child: Icon(Icons.send),
+                    onPressed: () => newMessage(messageText),
                   ),
-                ),
-                ElevatedButton(
-                  child: Icon(Icons.send),
-                  onPressed: () => newMessage(messageText),
-                ),
+                )
               ]
             )
           ),

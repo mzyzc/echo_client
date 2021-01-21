@@ -26,7 +26,7 @@ class ContactsList extends StatelessWidget {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.person),
-                title: Text('Person ${index + 1}'),
+                title: Text('John Doe'),
                 onTap: () {
                   Navigator.pushNamed(context, '/messages');
                 },
