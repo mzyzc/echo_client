@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
     final buttonLogin = ElevatedButton(
       child: Text('Login'),
       onPressed: () async {
-        await loginUser(username, password);
+        await User.loginUser(username, password);
         Navigator.pushReplacementNamed(context, '/');
       },
     );
@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
       child: Text('Register'),
       onPressed: () async {
         displayName = await requestDisplayName(context);
-        await registerUser(username, password, displayName);
+        await User.registerUser(username, password, displayName);
         Navigator.pushReplacementNamed(context, '/');
       }
     );

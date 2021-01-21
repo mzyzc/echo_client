@@ -10,6 +10,16 @@ class User {
 
   User(this._email, this._password, this._displayName);
 
+  static Future<void> registerUser(String username, String password, String displayName) async {
+    final user = User(username, password, displayName);
+    await user.register();
+  }
+
+  static Future<void> loginUser(String username, String password) async {
+    final user = User(username, password, 'placeholder');
+    await user.login();
+  }
+
   Future<void> register() async {
     _keys = new Keyring();
     await _keys.genKeys();
@@ -35,14 +45,4 @@ class User {
     print(data);
     Server.socket.write(data);
   }
-}
-
-Future<void> registerUser(String username, String password, String displayName) async {
-  final user = User(username, password, displayName);
-  await user.register();
-}
-
-Future<void> loginUser(String username, String password) async {
-  final user = User(username, password, 'placeholder');
-  await user.login();
 }
