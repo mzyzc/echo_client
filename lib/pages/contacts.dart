@@ -19,17 +19,22 @@ class ContactsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
-      child: ListView.builder(
-          itemCount: 100,
-          itemBuilder: (context, index) {
-            return ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Person ${index + 1}'),
-              onTap: () {
-                Navigator.pushNamed(context, '/messages');
-              },
-            );
-          }
+      child: ListView.separated(
+        itemCount: 100,
+        itemBuilder: (context, index) {
+          return Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Person ${index + 1}'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/messages');
+                },
+              )
+            ]
+          );
+        },
+        separatorBuilder: (context, index) => const Divider(),
       ),
     );
   }

@@ -15,17 +15,6 @@ class User {
     await _keys.genKeys();
     await _keys.export();
 
-    /*
-    final data = jsonEncode('''
-        {
-          "function": "CREATE USER",
-          "email": "${_email}",
-          "displayName": "${_displayName}",
-          "password": "${_password}",
-          "publicKey": "${base64.encode(_keys.exchangePair.publicKey.bytes)}",
-        }
-    ''');
-    */
     final data = jsonEncode({
         'function' : 'CREATE USER',
         'email' : _email,
@@ -49,6 +38,11 @@ class User {
 }
 
 Future<void> registerUser(String username, String password, String displayName) async {
-  final newUser = User(username, password, displayName);
-  await newUser.register();
+  final user = User(username, password, displayName);
+  await user.register();
+}
+
+Future<void> loginUser(String username, String password) async {
+  final user = User(username, password, 'placeholder');
+  await user.login();
 }
