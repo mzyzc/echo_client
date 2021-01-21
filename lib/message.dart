@@ -42,27 +42,25 @@ class Message {
     final enTimestamp = await _convert(utf8.encode(_timestamp.toIso8601String()), sessionKey);
     final enSignature = _signature.bytes;
 
-    final messageData = jsonEncode('''
-        {
+    final messageData = jsonEncode({
           "function": "CREATE MESSAGE",
-          "data": "${base64.encode(enData)}",
-          "mediaType": "${base64.encode(enMediaType)}",
-          "timestamp": "${base64.encode(enTimestamp)}",
-          "signature": "${base64.encode(enSignature)}",
-        }
-    ''');
+          "data": base64.encode(enData),
+          "mediaType": base64.encode(enMediaType),
+          "timestamp": base64.encode(enTimestamp),
+          "signature": base64.encode(enSignature),
+        });
     print(messageData);
     Server.socket.write(messageData);
   }
 }
 
-Future<void> newMessage() async {
+Future<void> newMessage(String messageText) async {
   final keys = new Keyring();
   await keys.import();
   final tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
 
   final message = new Message();
-  final messageData = utf8.encode("This is a message"); // for testing purposes only
+  final messageData = utf8.encode(messageText); // for testing purposes only
   await message.compose(messageData, "text/plain");
   await message.sign(keys.signingPair);
   await message.send(tempSessionKey);

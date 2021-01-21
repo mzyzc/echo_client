@@ -15,6 +15,7 @@ class User {
     await _keys.genKeys();
     await _keys.export();
 
+    /*
     final data = jsonEncode('''
         {
           "function": "CREATE USER",
@@ -24,18 +25,24 @@ class User {
           "publicKey": "${base64.encode(_keys.exchangePair.publicKey.bytes)}",
         }
     ''');
+    */
+    final data = jsonEncode({
+        'function' : 'CREATE USER',
+        'email' : _email,
+        'displayName' : _displayName,
+        'password' : _password,
+        'publicKey' : base64.encode(_keys.exchangePair.publicKey.bytes)
+    });
     print(data);
     Server.socket.write(data);
   }
 
   Future<void> login() async {
-    final data = jsonEncode('''
-        {
+    final data = jsonEncode({
           "function": "READ USER",
-          "email": "${_email}",
-          "password": "${_password}",
-        }
-    ''');
+          "email": _email,
+          "password": _password,
+        });
     print(data);
     Server.socket.write(data);
   }
