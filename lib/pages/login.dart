@@ -40,19 +40,22 @@ class LoginPage extends StatelessWidget {
     );
 
     final buttonRegister = TextButton(
-      child: Text('Register'),
-      onPressed: () async {
-        displayName = await requestDisplayName(context);
-        await User.registerUser(username, password, displayName);
-        Navigator.pop(context);
-      }
-    );
+        child: Text('Register'),
+        onPressed: () async {
+          displayName = await requestDisplayName(context);
+          await User.registerUser(username, password, displayName);
+          Navigator.pop(context);
+        });
 
     return Scaffold(
       body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[inputEmail, inputPassword, buttonRegister, buttonLogin]
-      ),
+          children: <Widget>[
+            inputEmail,
+            inputPassword,
+            buttonRegister,
+            buttonLogin
+          ]),
     );
   }
 }
@@ -76,13 +79,12 @@ Future<String> requestDisplayName(BuildContext context) {
     onPressed: () => Navigator.pop(context, displayName),
   );
 
-  return showDialog (
-    context: context,
-    builder: (context) {
-      return SimpleDialog(
-        title: Text("Display Name"),
-        children: <Widget>[inputDisplayName, buttonSubmit],
-      );
-    }
-  );
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Display Name"),
+          children: <Widget>[inputDisplayName, buttonSubmit],
+        );
+      });
 }

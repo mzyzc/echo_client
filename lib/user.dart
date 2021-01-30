@@ -10,7 +10,8 @@ class User {
 
   User(this._email, this._password, this._displayName);
 
-  static Future<void> registerUser(String username, String password, String displayName) async {
+  static Future<void> registerUser(
+      String username, String password, String displayName) async {
     final user = User(username, password, displayName);
     await user.register();
   }
@@ -26,11 +27,11 @@ class User {
     await _keys.export();
 
     final data = jsonEncode({
-        'function' : 'CREATE USER',
-        'email' : _email,
-        'displayName' : _displayName,
-        'password' : _password,
-        'publicKey' : base64.encode(_keys.exchangePair.publicKey.bytes)
+      'function': 'CREATE USER',
+      'email': _email,
+      'displayName': _displayName,
+      'password': _password,
+      'publicKey': base64.encode(_keys.exchangePair.publicKey.bytes)
     });
     print(data);
     Server.socket.write(data);
@@ -38,10 +39,10 @@ class User {
 
   Future<void> login() async {
     final data = jsonEncode({
-          "function": "READ USER",
-          "email": _email,
-          "password": _password,
-        });
+      "function": "VERIFY USER",
+      "email": _email,
+      "password": _password,
+    });
     print(data);
     Server.socket.write(data);
   }
