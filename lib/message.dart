@@ -18,7 +18,7 @@ class Message {
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
     final cipher = CipherWithAppendedMac(aesCtr, Hmac(sha256));
     final nonce = cipher.newNonce();
-    
+
     return await cipher.encrypt(
       data,
       secretKey: sessionKey,
@@ -39,16 +39,22 @@ class Message {
   Future<void> send(SecretKey sessionKey) async {
     final enData = await _convert(_data, sessionKey);
     final enMediaType = await _convert(utf8.encode(_mediaType), sessionKey);
-    final enTimestamp = await _convert(utf8.encode(_timestamp.toIso8601String()), sessionKey);
+    final enTimestamp =
+        await _convert(utf8.encode(_timestamp.toIso8601String()), sessionKey);
     final enSignature = _signature.bytes;
 
     final messageData = jsonEncode({
-          "function": "CREATE MESSAGE",
+      "function": "CREATE MESSAGES",
+      "messages": [
+        {
           "data": base64.encode(enData),
           "mediaType": base64.encode(enMediaType),
           "timestamp": base64.encode(enTimestamp),
           "signature": base64.encode(enSignature),
-        });
+          "conversation": 1,
+        }
+      ]
+    });
     print(messageData);
     Server.socket.write(messageData);
   }
@@ -57,7 +63,8 @@ class Message {
 Future<void> newMessage(String messageText) async {
   final keys = new Keyring();
   await keys.import();
-  final tempSessionKey = await keys.createSessionKey(keys.exchangePair.publicKey); // for testing purposes only
+  final tempSessionKey = await keys.createSessionKey(
+      keys.exchangePair.publicKey); // for testing purposes only
 
   final message = new Message();
   final messageData = utf8.encode(messageText); // for testing purposes only

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:echo_client/pages/contacts.dart';
+import 'package:echo_client/pages/conversations.dart';
 import 'package:echo_client/pages/login.dart';
 import 'package:echo_client/pages/messages.dart';
 import 'package:echo_client/pages/settings.dart';
@@ -38,13 +38,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  var _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    ContactsPage(),
+    ConversationsPage(),
     SettingsPage(),
   ];
-  
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -53,9 +53,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final navContacts = BottomNavigationBarItem(
+    final navConversations = BottomNavigationBarItem(
       icon: Icon(Icons.person),
-      label: 'Contacts',
+      label: 'Conversations',
     );
 
     final navSettings = BottomNavigationBarItem(
@@ -65,13 +65,13 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.title),
-        ),
+        title: Text(widget.title),
+      ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[navContacts, navSettings],
+        items: <BottomNavigationBarItem>[navConversations, navSettings],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),

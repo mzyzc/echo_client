@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ContactsPage extends StatelessWidget {
+class ConversationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ContactsList(),
+        child: ConversationsList(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => print('Contact added'),
@@ -15,24 +15,23 @@ class ContactsPage extends StatelessWidget {
     );
   }
 }
-class ContactsList extends StatelessWidget {
+
+class ConversationsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
       child: ListView.separated(
         itemCount: 100,
         itemBuilder: (context, index) {
-          return Column(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('John Doe'),
-                onTap: () {
-                  Navigator.pushNamed(context, '/messages');
-                },
-              )
-            ]
-          );
+          return Column(children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('John Doe'),
+              onTap: () {
+                Navigator.pushNamed(context, '/messages');
+              },
+            )
+          ]);
         },
         separatorBuilder: (context, index) => const Divider(),
       ),

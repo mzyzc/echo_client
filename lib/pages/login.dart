@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:echo_client/user.dart';
 
 class LoginPage extends StatelessWidget {
-  var username;
+  var email;
   var password;
-  var displayName;
+  var authCode;
 
   @override
   Widget build(BuildContext context) {
     final inputEmail = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextField(
-        onChanged: (text) => username = text,
+        onChanged: (text) => email = text,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'Username',
+          labelText: 'Email',
         ),
       ),
     );
@@ -34,17 +34,18 @@ class LoginPage extends StatelessWidget {
     final buttonLogin = ElevatedButton(
       child: Text('Login'),
       onPressed: () async {
-        await User.loginUser(username, password);
-        Navigator.pop(context);
+        final user = User(email, password);
+        await user.login();
+        Navigator.pop(context, email);
       },
     );
 
     final buttonRegister = TextButton(
         child: Text('Register'),
         onPressed: () async {
-          displayName = await requestDisplayName(context);
-          await User.registerUser(username, password, displayName);
-          Navigator.pop(context);
+          authCode = await requestAuthCode(context);
+          final user = User(email, password);
+          await user.register();
         });
 
     return Scaffold(
@@ -60,31 +61,31 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-Future<String> requestDisplayName(BuildContext context) {
-  var displayName;
+Future<String> requestAuthCode(BuildContext context) {
+  var authCode;
 
-  final inputDisplayName = Padding(
+  final inputAuthCode = Padding(
     padding: EdgeInsets.all(8.0),
     child: TextField(
-      onChanged: (text) => displayName = text,
+      onChanged: (text) => authCode = text,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
-        labelText: 'Display name',
+        labelText: 'Authentication code',
       ),
     ),
   );
 
   final buttonSubmit = TextButton(
     child: Text('Submit'),
-    onPressed: () => Navigator.pop(context, displayName),
+    onPressed: () => Navigator.pop(context, authCode),
   );
 
   return showDialog(
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: Text("Display Name"),
-          children: <Widget>[inputDisplayName, buttonSubmit],
+          title: Text("Authentication Code"),
+          children: <Widget>[inputAuthCode, buttonSubmit],
         );
       });
 }
