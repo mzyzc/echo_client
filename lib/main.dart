@@ -1,3 +1,4 @@
+import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:echo_client/pages/conversations.dart';
 import 'package:echo_client/pages/login.dart';
@@ -6,7 +7,9 @@ import 'package:echo_client/pages/settings.dart';
 import 'package:echo_client/server.dart';
 
 void main() {
-  Server.init('czyz.xyz');
+  FlutterCryptography.enable();
+  final server = new Server();
+  server.connect('czyz.xyz');
   runApp(MyApp());
 }
 

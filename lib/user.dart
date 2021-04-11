@@ -25,7 +25,9 @@ class User {
       ]
     });
     print(data);
-    Server.socket.write(data);
+
+    final server = new Server();
+    server.write(data);
   }
 
   Future<void> login() async {
@@ -39,6 +41,8 @@ class User {
       ]
     });
     print(data);
-    Server.socket.write(data);
+
+    final server = new Server();
+    server.write(data);
   }
 }

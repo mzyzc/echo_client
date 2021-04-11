@@ -24,7 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider:
-  cryptography_flutter: ^1.0.0
+  cryptography: ^2.0.0
+  cryptography_flutter: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:cryptography_flutter/cryptography.dart';
+import 'package:cryptography_flutter/cryptography_flutter.dart';
+import 'package:cryptography/cryptography.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Keyring {
@@ -34,9 +35,11 @@ class Keyring {
     final siPrFile = File('${dataDir.path}/privateSign.key');
     final siPuFile = File('${dataDir.path}/publicSign.key');
 
-    exchangePair = KeyPair(privateKey: PrivateKey(await exPrFile.readAsBytes()),
+    exchangePair = KeyPair(
+        privateKey: PrivateKey(await exPrFile.readAsBytes()),
         publicKey: PublicKey(await exPuFile.readAsBytes()));
-    signingPair = KeyPair(privateKey: PrivateKey(await siPrFile.readAsBytes()),
+    signingPair = KeyPair(
+        privateKey: PrivateKey(await siPrFile.readAsBytes()),
         publicKey: PublicKey(await siPuFile.readAsBytes()));
   }
 

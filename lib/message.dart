@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:cryptography_flutter/cryptography.dart';
+import 'package:cryptography_flutter/cryptography_flutter.dart';
+import 'package:cryptography/cryptography.dart';
 import 'package:echo_client/keys.dart';
 import 'package:echo_client/server.dart';
 
@@ -9,10 +10,35 @@ class Message {
   Signature _signature;
   DateTime _timestamp;
 
-  Future<void> compose(List<int> data, String mediaType) async {
+  Message.fromJson(String json) {
+    final data = jsonDecode(json);
+
+    this._data = data['data'];
+    this._mediaType = data['mediaType'];
+    this._signature = data['signature'];
+    this._timestamp = data['timestamp'];
+  }
+
+  Message.compose(List<int> data, String mediaType) {
     this._data = data;
     this._mediaType = mediaType;
     this._timestamp = new DateTime.now().toUtc();
+  }
+
+  //static Future<List<Message>> fetch(int conversationId) async {
+  static Future<void> fetch(int conversationId) async {
+    final request = jsonEncode({
+      "function": "READ MESSAGES",
+      "conversations": [
+        {
+          "id": conversationId,
+        }
+      ]
+    });
+
+    final server = new Server();
+    final response = server.write(request);
+    final data = server.listen();
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
@@ -43,7 +69,7 @@ class Message {
         await _convert(utf8.encode(_timestamp.toIso8601String()), sessionKey);
     final enSignature = _signature.bytes;
 
-    final messageData = jsonEncode({
+    final request = jsonEncode({
       "function": "CREATE MESSAGES",
       "messages": [
         {
@@ -55,8 +81,9 @@ class Message {
         }
       ]
     });
-    print(messageData);
-    Server.socket.write(messageData);
+
+    final server = new Server();
+    server.write(request);
   }
 }
 
@@ -66,9 +93,8 @@ Future<void> newMessage(String messageText) async {
   final tempSessionKey = await keys.createSessionKey(
       keys.exchangePair.publicKey); // for testing purposes only
 
-  final message = new Message();
-  final messageData = utf8.encode(messageText); // for testing purposes only
-  await message.compose(messageData, "text/plain");
+  final message = Message.compose(
+      utf8.encode(messageText), 'text/plain'); // for testing purposes only
   await message.sign(keys.signingPair);
   await message.send(tempSessionKey);
 }
