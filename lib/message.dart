@@ -42,24 +42,26 @@ class Message {
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
-    final cipher = CipherWithAppendedMac(aesCtr, Hmac(sha256));
+    final cipher = AesCtr.with128bits(macAlgorithm: Hmac.sha256());
     final nonce = cipher.newNonce();
 
-    return await cipher.encrypt(
+    return (await cipher.encrypt(
       data,
       secretKey: sessionKey,
       nonce: nonce,
-    );
+    ))
+        .cipherText;
   }
 
   Future<void> sign(KeyPair signKeys) async {
-    final digest = (await ed25519.sign(_data, signKeys)).bytes;
-    _signature = Signature(digest, publicKey: signKeys.publicKey);
+    final digest = (await Ed25519().sign(_data, keyPair: signKeys)).bytes;
+    _signature =
+        Signature(digest, publicKey: await signKeys.extractPublicKey());
   }
 
   Future<bool> verifySignature(KeyPair signKeys) async {
-    final digest = (await ed25519.sign(_data, signKeys)).bytes;
-    return await ed25519.verify(digest, _signature);
+    final digest = (await Ed25519().sign(_data, keyPair: signKeys)).bytes;
+    return await Ed25519().verify(digest, signature: _signature);
   }
 
   Future<void> send(SecretKey sessionKey) async {
@@ -91,10 +93,10 @@ Future<void> newMessage(String messageText) async {
   final keys = new Keyring();
   await keys.import();
   final tempSessionKey = await keys.createSessionKey(
-      keys.exchangePair.publicKey); // for testing purposes only
+      await keys.exchangePair.extractPublicKey()); // for testing purposes only
 
   final message = Message.compose(
       utf8.encode(messageText), 'text/plain'); // for testing purposes only
-  await message.sign(keys.signingPair);
+  await message.sign(keys.signaturePair);
   await message.send(tempSessionKey);
 }

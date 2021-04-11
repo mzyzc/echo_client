@@ -20,7 +20,8 @@ class User {
         {
           'email': _email,
           'password': _password,
-          'publicKey': base64.encode(_keys.exchangePair.publicKey.bytes)
+          'publicKey': base64.encode(utf8
+              .encode((await _keys.exchangePair.extractPublicKey()).toString()))
         }
       ]
     });

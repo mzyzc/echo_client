@@ -1,28 +1,38 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Keyring {
   KeyPair exchangePair;
-  KeyPair signingPair;
+  List<int> _exchangeSeed;
+  KeyPair signaturePair;
+  List<int> _signatureSeed;
 
   Future<void> genKeys() async {
     exchangePair = await _createExchangePair();
-    signingPair = await _createSigningPair();
+    signaturePair = await _createSigningPair();
   }
 
   Future<KeyPair> _createExchangePair() async {
-    return await x25519.newKeyPair();
+    final seed = genSeed(64);
+    return await X25519().newKeyPairFromSeed(seed);
   }
 
   Future<KeyPair> _createSigningPair() async {
-    return await ed25519.newKeyPair();
+    final seed = genSeed(64);
+    return await Ed25519().newKeyPairFromSeed(seed);
+  }
+
+  List<int> genSeed(int length) {
+    final random = Random.secure();
+    return List<int>.generate(length, (i) => random.nextInt(255));
   }
 
   Future<SecretKey> createSessionKey(PublicKey remoteKey) async {
-    return await x25519.sharedSecret(
-      localPrivateKey: exchangePair.privateKey,
+    return await X25519().sharedSecretKey(
+      keyPair: exchangePair,
       remotePublicKey: remoteKey,
     );
   }
@@ -30,30 +40,23 @@ class Keyring {
   Future<void> import() async {
     final dataDir = await getApplicationDocumentsDirectory();
 
-    final exPrFile = File('${dataDir.path}/privateExchange.key');
-    final exPuFile = File('${dataDir.path}/publicExchange.key');
-    final siPrFile = File('${dataDir.path}/privateSign.key');
-    final siPuFile = File('${dataDir.path}/publicSign.key');
+    final exchangeFile = File('${dataDir.path}/exchangeSeed.key');
+    final signatureFile = File('${dataDir.path}/signatureSeed.key');
 
-    exchangePair = KeyPair(
-        privateKey: PrivateKey(await exPrFile.readAsBytes()),
-        publicKey: PublicKey(await exPuFile.readAsBytes()));
-    signingPair = KeyPair(
-        privateKey: PrivateKey(await siPrFile.readAsBytes()),
-        publicKey: PublicKey(await siPuFile.readAsBytes()));
+    final exchangeFileBytes = await exchangeFile.readAsBytes();
+    final signatureFileBytes = await signatureFile.readAsBytes();
+
+    exchangePair = await X25519().newKeyPairFromSeed(exchangeFileBytes);
+    signaturePair = await Ed25519().newKeyPairFromSeed(signatureFileBytes);
   }
 
   Future<void> export() async {
     final dataDir = await getApplicationDocumentsDirectory();
 
-    final exPrFile = File('${dataDir.path}/privateExchange.key');
-    final exPuFile = File('${dataDir.path}/publicExchange.key');
-    final siPrFile = File('${dataDir.path}/privateSign.key');
-    final siPuFile = File('${dataDir.path}/publicSign.key');
+    final exchangeFile = File('${dataDir.path}/exchangeSeed.key');
+    final signatureFile = File('${dataDir.path}/signatureSeed.key');
 
-    exPrFile.writeAsBytes(await exchangePair.privateKey.extract());
-    exPuFile.writeAsBytes(exchangePair.publicKey.bytes);
-    siPrFile.writeAsBytes(await signingPair.privateKey.extract());
-    siPuFile.writeAsBytes(signingPair.publicKey.bytes);
+    await exchangeFile.writeAsBytes(_exchangeSeed);
+    await signatureFile.writeAsBytes(_signatureSeed);
   }
 }
