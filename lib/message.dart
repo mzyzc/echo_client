@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:echo_client/keys.dart';
 import 'package:echo_client/server.dart';
