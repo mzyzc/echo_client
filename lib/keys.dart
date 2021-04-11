@@ -15,13 +15,13 @@ class Keyring {
   }
 
   Future<KeyPair> _createExchangePair() async {
-    final seed = genSeed(64);
-    return await X25519().newKeyPairFromSeed(seed);
+    _exchangeSeed = genSeed(32);
+    return await X25519().newKeyPairFromSeed(_exchangeSeed);
   }
 
   Future<KeyPair> _createSigningPair() async {
-    final seed = genSeed(64);
-    return await Ed25519().newKeyPairFromSeed(seed);
+    _signatureSeed = genSeed(32);
+    return await Ed25519().newKeyPairFromSeed(_signatureSeed);
   }
 
   List<int> genSeed(int length) {
@@ -37,7 +37,7 @@ class Keyring {
   }
 
   Future<void> import() async {
-    final dataDir = await getApplicationDocumentsDirectory();
+    final dataDir = await getApplicationSupportDirectory();
 
     final exchangeFile = File('${dataDir.path}/exchangeSeed.key');
     final signatureFile = File('${dataDir.path}/signatureSeed.key');
@@ -50,7 +50,7 @@ class Keyring {
   }
 
   Future<void> export() async {
-    final dataDir = await getApplicationDocumentsDirectory();
+    final dataDir = await getApplicationSupportDirectory();
 
     final exchangeFile = File('${dataDir.path}/exchangeSeed.key');
     final signatureFile = File('${dataDir.path}/signatureSeed.key');

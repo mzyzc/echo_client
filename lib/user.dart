@@ -25,7 +25,6 @@ class User {
         }
       ]
     });
-    print(data);
 
     final server = new Server();
     server.write(data);
@@ -41,7 +40,6 @@ class User {
         }
       ]
     });
-    print(data);
 
     final server = new Server();
     server.write(data);

@@ -41,7 +41,7 @@ class Message {
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
-    final cipher = AesCtr.with128bits(macAlgorithm: Hmac.sha256());
+    final cipher = AesCtr.with256bits(macAlgorithm: Poly1305());
     final nonce = cipher.newNonce();
 
     return (await cipher.encrypt(

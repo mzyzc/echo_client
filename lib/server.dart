@@ -46,6 +46,7 @@ class Server {
       this._socket.close();
     });
 
+    print(response);
     return response;
   }
 }
