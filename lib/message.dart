@@ -35,7 +35,7 @@ class Message {
 
     final server = new Server();
     server.write(request);
-    final data = server.data;
+    final data = server.read();
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {

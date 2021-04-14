@@ -14,14 +14,15 @@ class Server {
     return _instance;
   }
 
-  String host;
-  int port;
+  String _host;
+  int _port;
   SecureSocket _socket;
-  Response data;
+  Response _data;
 
   void connect(String host, int port) async {
-    this.host = host;
-    this.port = port;
+    _host = host;
+    _port = port;
+
     _socket = await SecureSocket.connect(host, port,
         onBadCertificate: (X509Certificate cert) {
       print("Certificate warning: ${cert.issuer}:${cert.subject}");
@@ -32,7 +33,7 @@ class Server {
 
     _socket.listen(
       (List<int> response) {
-        data = Response(response);
+        _data = Response(response);
         print(String.fromCharCodes(response));
       },
       onError: (error) {
@@ -49,6 +50,10 @@ class Server {
 
   void write(Object data) {
     this._socket.write(data);
+  }
+
+  Response read() {
+    return _data;
   }
 }
 
