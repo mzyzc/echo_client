@@ -15,17 +15,23 @@ class Server {
   }
 
   String host;
+  int port;
   SecureSocket _socket;
 
-  void connect(String host) async {
+  void connect(String host, int port) async {
     this.host = host;
-    this._socket = await SecureSocket.connect(host, 63100,
+    this.port = port;
+    this._socket = await SecureSocket.connect(host, port,
         onBadCertificate: (X509Certificate cert) {
       print("Certificate warning: ${cert.issuer}:${cert.subject}");
       return false;
     });
 
     print('Connected to $host:${this._socket.remotePort}');
+
+    /* */
+    this._socket.listen((var data) => print(data));
+    /* */
   }
 
   void write(Object data) {
@@ -40,13 +46,12 @@ class Server {
     }, onError: (error) {
       print(error);
       this._socket.destroy();
-      this.connect(host);
+      this.connect(host, port);
     }, onDone: () {
       this._socket.flush();
       this._socket.close();
     });
 
-    print(response);
     return response;
   }
 }
