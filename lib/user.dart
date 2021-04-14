@@ -9,6 +9,10 @@ class User {
 
   User(this._email, this._password);
 
+  User.fromJson(Map<dynamic, dynamic> json) {
+    _email = json['email'];
+  }
+
   Future<void> register() async {
     _keys = new Keyring();
     await _keys.genKeys();

@@ -9,13 +9,11 @@ class Message {
   Signature _signature;
   DateTime _timestamp;
 
-  Message.fromJson(String json) {
-    final data = jsonDecode(json);
-
-    this._data = data['data'];
-    this._mediaType = data['mediaType'];
-    this._signature = data['signature'];
-    this._timestamp = data['timestamp'];
+  Message.fromJson(Map<dynamic, dynamic> json) {
+    _data = json['data'];
+    _mediaType = json['mediaType'];
+    _signature = json['signature'];
+    _timestamp = json['timestamp'];
   }
 
   Message.compose(List<int> data, String mediaType) {
@@ -36,8 +34,8 @@ class Message {
     });
 
     final server = new Server();
-    final response = server.write(request);
-    final data = server.listen();
+    server.write(request);
+    final data = server.data;
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {

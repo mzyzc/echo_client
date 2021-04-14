@@ -17,42 +17,38 @@ class Server {
   String host;
   int port;
   SecureSocket _socket;
+  Response data;
 
   void connect(String host, int port) async {
     this.host = host;
     this.port = port;
-    this._socket = await SecureSocket.connect(host, port,
+    _socket = await SecureSocket.connect(host, port,
         onBadCertificate: (X509Certificate cert) {
       print("Certificate warning: ${cert.issuer}:${cert.subject}");
       return false;
     });
 
-    print('Connected to $host:${this._socket.remotePort}');
+    print('Connected to $host:${_socket.remotePort}');
 
-    /* */
-    this._socket.listen((var data) => print(data));
-    /* */
+    _socket.listen(
+      (List<int> response) {
+        data = Response(response);
+        print(String.fromCharCodes(response));
+      },
+      onError: (error) {
+        print(error);
+        _socket.destroy();
+        connect(host, port);
+      },
+      onDone: () {
+        _socket.destroy();
+        connect(host, port);
+      },
+    );
   }
 
   void write(Object data) {
     this._socket.write(data);
-  }
-
-  String listen() {
-    var response = '';
-
-    this._socket.listen((List<int> data) {
-      response = String.fromCharCodes(data);
-    }, onError: (error) {
-      print(error);
-      this._socket.destroy();
-      this.connect(host, port);
-    }, onDone: () {
-      this._socket.flush();
-      this._socket.close();
-    });
-
-    return response;
   }
 }
 
@@ -62,15 +58,15 @@ class Response {
   List<Message> messages;
   List<User> users;
 
-  static Response fromJson(String data) {
-    final decoded = jsonDecode(data);
+  Response(List<int> data) {
+    final dataString = String.fromCharCodes(data);
+    final decoded = jsonDecode(dataString);
 
-    final response = new Response();
-    response.status = decoded.status;
-    response.conversations = decoded.conversations;
-    response.messages = decoded.messages;
-    response.users = decoded.users;
-
-    return response;
+    status = decoded.status;
+    conversations = List<Conversation>.from(
+        decoded.conversations.map((data) => Conversation.fromJson(data)));
+    messages = List<Message>.from(
+        decoded.messages.map((data) => Message.fromJson(data)));
+    users = List<User>.from(decoded.users.map((data) => User.fromJson(data)));
   }
 }
