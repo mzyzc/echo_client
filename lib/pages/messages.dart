@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:echo_client/server.dart';
 import 'package:echo_client/message.dart';
+import 'package:echo_client/conversation.dart';
 
 class MessagesPage extends StatelessWidget {
+  final Conversation conversation;
+  MessagesPage(this.conversation);
+
   @override
   Widget build(BuildContext context) {
     var messageText;
@@ -14,7 +18,7 @@ class MessagesPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('John Doe'),
+          title: Text(conversation.name),
         ),
         body: Column(children: <Widget>[
           Expanded(

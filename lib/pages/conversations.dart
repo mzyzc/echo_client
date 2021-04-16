@@ -32,7 +32,8 @@ class ConversationsList extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text(conversationList[index].name),
               onTap: () {
-                Navigator.pushNamed(context, '/messages');
+                Navigator.pushNamed(context, '/messages',
+                    arguments: conversationList[index]);
               },
             )
           ]);

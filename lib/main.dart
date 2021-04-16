@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(title: 'Echo'),
         '/login': (context) => LoginPage(),
-        '/messages': (context) => MessagesPage(),
+        '/messages': (context) =>
+            MessagesPage(ModalRoute.of(context).settings.arguments),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
