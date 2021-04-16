@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:echo_client/dummy_server.dart';
 import 'package:echo_client/response.dart';
 
@@ -22,7 +21,7 @@ class Server {
     _host = host;
     _port = port;
 
-    _socket = await SecureSocket.connect(host, port,
+    _socket = await SecureSocket.connect(_host, _port,
         onBadCertificate: (X509Certificate cert) {
       print("Certificate warning: ${cert.issuer}:${cert.subject}");
       return false;
