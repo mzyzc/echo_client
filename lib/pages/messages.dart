@@ -1,12 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:echo_client/server.dart';
 import 'package:echo_client/message.dart';
 
 class MessagesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var messageText;
-
     final altDirection = [TextDirection.rtl, TextDirection.ltr];
+
+    final server = new Server();
+    final messagesList = server.getMessagesTemp().messages;
+    final usersList = server.getUsersTemp().users;
 
     return Scaffold(
         appBar: AppBar(
@@ -17,14 +22,13 @@ class MessagesPage extends StatelessWidget {
               child: Scrollbar(
                   child: ListView.builder(
                       reverse: true,
-                      itemCount: 100,
+                      itemCount: messagesList.length,
                       itemBuilder: (context, index) {
                         return Directionality(
                           textDirection: altDirection[index % 2],
                           child: ListTile(
-                            title: Text(
-                                'This is an example message functioning as a proof of concept'),
-                            subtitle: Text('11:32'),
+                            title: Text(messagesList[index].messageData),
+                            subtitle: Text(messagesList[index].timeSent),
                           ),
                         );
                       }))),

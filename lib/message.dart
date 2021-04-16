@@ -9,17 +9,25 @@ class Message {
   Signature _signature;
   DateTime _timestamp;
 
-  Message.fromJson(Map<dynamic, dynamic> json) {
-    _data = json['data'];
+  Message.fromJson(Map<String, dynamic> json) {
+    _data = utf8.encode(json['data']);
     _mediaType = json['mediaType'];
-    _signature = json['signature'];
-    _timestamp = json['timestamp'];
+    //_signature = Signature(json['signature'], publicKey: ???);
+    _timestamp = DateTime.parse(json['timestamp']);
   }
 
   Message.compose(List<int> data, String mediaType) {
     this._data = data;
     this._mediaType = mediaType;
     this._timestamp = new DateTime.now().toUtc();
+  }
+
+  String get messageData {
+    return utf8.decode(_data);
+  }
+
+  String get timeSent {
+    return _timestamp.toString();
   }
 
   //static Future<List<Message>> fetch(int conversationId) async {

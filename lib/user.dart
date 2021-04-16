@@ -9,7 +9,7 @@ class User {
 
   User(this._email, this._password);
 
-  User.fromJson(Map<dynamic, dynamic> json) {
+  User.fromJson(Map<String, dynamic> json) {
     _email = json['email'];
   }
 
