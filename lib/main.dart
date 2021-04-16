@@ -9,8 +9,7 @@ import 'package:echo_client/server.dart';
 void main() {
   FlutterCryptography.enable();
   final server = new Server();
-  //server.connect('czyz.xyz', 63100);
-  server.connect('czyz.xyz', 443);
+  server.connect('czyz.xyz', 63100);
   runApp(MyApp());
 }
 
