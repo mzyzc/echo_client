@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:echo_client/message.dart';
-import 'package:echo_client/user.dart';
-import 'package:echo_client/conversation.dart';
+import 'package:echo_client/dummy_server.dart';
+import 'package:echo_client/response.dart';
 
 class Server {
   // Initialize singleton
@@ -56,112 +55,15 @@ class Server {
     return _data;
   }
 
-  Response getMessagesTemp() {
-    final messageJson = json.encode({
-      "status": 1,
-      "messages": [
-        {
-          "id": 1,
-          "data": "Hello",
-          "mediaType": "text/plain",
-          "timestamp": "2014-02-15T08:57:47.812",
-          "signature": "cHJldGVuZCB0aGlzIGlzIGEgdmFsaWQgc2lnbmF0dXJl",
-        },
-        {
-          "id": 2,
-          "data": "Hello",
-          "mediaType": "text/plain",
-          "timestamp": "2014-02-15T08:57:47.812",
-          "signature": "cHJldGVuZCB0aGlzIGlzIGEgdmFsaWQgc2lnbmF0dXJl",
-        },
-        {
-          "id": 3,
-          "data": "Hello",
-          "mediaType": "text/plain",
-          "timestamp": "2014-02-15T08:57:47.812",
-          "signature": "cHJldGVuZCB0aGlzIGlzIGEgdmFsaWQgc2lnbmF0dXJl",
-        },
-      ]
-    });
-
-    return Response(utf8.encode(messageJson));
+  Response get messagesTemp {
+    return DummyServer.messages;
   }
 
-  Response getConversationsTemp() {
-    final conversationJson = json.encode({
-      "status": 1,
-      "conversations": [
-        {
-          "id": 1,
-          "name": "Genesis",
-        },
-        {
-          "id": 2,
-          "name": "Second Hand",
-        },
-        {
-          "id": 3,
-          "name": "Lucky Lucky",
-        },
-      ]
-    });
-
-    return Response(utf8.encode(conversationJson));
+  Response get conversationsTemp {
+    return DummyServer.conversations;
   }
 
-  Response getUsersTemp() {
-    final userJson = json.encode({
-      "status": 1,
-      "users": [
-        {
-          "id": 1,
-          "email": "@example.com",
-          "displayName": "Bobby Boss",
-          "publicKey": "a2V5",
-        },
-        {
-          "id": 2,
-          "email": "charles@example.com",
-          "displayName": "Charlie Chimney",
-          "publicKey": "a2V5",
-        },
-        {
-          "id": 3,
-          "email": "dobby@example.com",
-          "displayName": "dobby a",
-          "publicKey": "a2V5",
-        },
-      ]
-    });
-
-    return Response(utf8.encode(userJson));
-  }
-}
-
-class Response {
-  int status;
-  List<Conversation> conversations;
-  List<Message> messages;
-  List<User> users;
-
-  Response(List<int> data) {
-    final dataString = String.fromCharCodes(data);
-    final decoded = jsonDecode(dataString);
-
-    if (decoded.containsKey("status")) {
-      status = decoded["status"];
-    }
-    if (decoded.containsKey("conversations")) {
-      conversations = new List<Conversation>.from(
-          decoded["conversations"].map((data) => Conversation.fromJson(data)));
-    }
-    if (decoded.containsKey("messages")) {
-      messages = new List<Message>.from(
-          decoded["messages"].map((data) => Message.fromJson(data)));
-    }
-    if (decoded.containsKey("users")) {
-      users = new List<User>.from(
-          decoded["users"].map((data) => User.fromJson(data)));
-    }
+  Response get usersTemp {
+    return DummyServer.users;
   }
 }

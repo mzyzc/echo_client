@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:echo_client/server.dart';
 import 'package:echo_client/message.dart';
@@ -10,8 +9,8 @@ class MessagesPage extends StatelessWidget {
     final altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     final server = new Server();
-    final messagesList = server.getMessagesTemp().messages;
-    final usersList = server.getUsersTemp().users;
+    final messagesList = server.messagesTemp.messages;
+    final usersList = server.usersTemp.users;
 
     return Scaffold(
         appBar: AppBar(
