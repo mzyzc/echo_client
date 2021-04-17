@@ -35,6 +35,7 @@ class MessagesPage extends StatelessWidget {
                           ),
                         );
                       }))),
+          Divider(),
           Align(
               alignment: Alignment.bottomCenter,
               child: Row(children: <Widget>[
