@@ -69,7 +69,7 @@ class Message {
     return await Ed25519().verify(digest, signature: _signature);
   }
 
-  Future<void> send(SecretKey sessionKey) async {
+  Future<void> send(SecretKey sessionKey, int conversationId) async {
     final enData = await _convert(_data, sessionKey);
     final enMediaType = await _convert(utf8.encode(_mediaType), sessionKey);
     final enTimestamp =
@@ -84,7 +84,11 @@ class Message {
           "mediaType": base64.encode(enMediaType),
           "timestamp": base64.encode(enTimestamp),
           "signature": base64.encode(enSignature),
-          "conversation": 1,
+        },
+      ],
+      "conversations": [
+        {
+          "id": conversationId,
         }
       ]
     });
@@ -94,7 +98,7 @@ class Message {
   }
 }
 
-Future<void> newMessage(String messageText) async {
+Future<void> newMessage(String messageText, int conversationId) async {
   final keys = new Keyring();
   await keys.import();
   final tempSessionKey = await keys.createSessionKey(
@@ -103,5 +107,5 @@ Future<void> newMessage(String messageText) async {
   final message = Message.compose(
       utf8.encode(messageText), 'text/plain'); // for testing purposes only
   await message.sign(keys.signaturePair);
-  await message.send(tempSessionKey);
+  await message.send(tempSessionKey, conversationId);
 }

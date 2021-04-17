@@ -13,8 +13,8 @@ class MessagesPage extends StatelessWidget {
     final altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     final server = new Server();
-    final messagesList = server.messagesTemp.messages;
-    final usersList = server.usersTemp.users;
+    final messagesList = server.messagesTemp(conversation.id).messages;
+    final usersList = server.usersTemp(conversation.id).users;
 
     return Scaffold(
         appBar: AppBar(
@@ -52,7 +52,7 @@ class MessagesPage extends StatelessWidget {
                   padding: EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     child: Icon(Icons.send),
-                    onPressed: () => newMessage(messageText),
+                    onPressed: () => newMessage(messageText, conversation.id),
                   ),
                 )
               ])),

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:echo_client/dummy_server.dart';
 import 'package:echo_client/response.dart';
@@ -30,7 +31,7 @@ class Server {
     print('Connected to $host:${_socket.remotePort}');
 
     _socket.listen(
-      (List<int> response) {
+      (List<int> response) async {
         _data = Response(response);
         print(String.fromCharCodes(response));
       },
@@ -54,15 +55,40 @@ class Server {
     return _data;
   }
 
-  Response get messagesTemp {
+  Response messagesTemp(int conversationId) {
+    final request = jsonEncode({
+      "function": "READ MESSAGES",
+      "conversations": [
+        {
+          "id": conversationId,
+        }
+      ]
+    });
+    write(request);
+
     return DummyServer.messages;
   }
 
-  Response get conversationsTemp {
+  Response conversationsTemp() {
+    /*
+    final request = jsonEncode({"function": "READ CONVERSATIONS"});
+    write(request);
+    */
+
     return DummyServer.conversations;
   }
 
-  Response get usersTemp {
+  Response usersTemp(int conversationId) {
+    final request = jsonEncode({
+      "function": "READ USERS",
+      "conversations": [
+        {
+          "id": conversationId,
+        }
+      ]
+    });
+    write(request);
+
     return DummyServer.users;
   }
 }
