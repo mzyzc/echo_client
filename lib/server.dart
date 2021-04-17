@@ -32,8 +32,8 @@ class Server {
 
     _socket.listen(
       (List<int> response) async {
-        _data = Response(response);
         print(String.fromCharCodes(response));
+        _data = Response(response);
       },
       onError: (error) {
         print(error);

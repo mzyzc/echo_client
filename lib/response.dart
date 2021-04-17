@@ -16,15 +16,15 @@ class Response {
     if (decoded.containsKey("status")) {
       status = decoded["status"];
     }
-    if (decoded.containsKey("conversations")) {
+    if (decoded["conversations"] != null) {
       conversations = new List<Conversation>.from(
           decoded["conversations"].map((data) => Conversation.fromJson(data)));
     }
-    if (decoded.containsKey("messages")) {
+    if (decoded["messages"] != null) {
       messages = new List<Message>.from(
           decoded["messages"].map((data) => Message.fromJson(data)));
     }
-    if (decoded.containsKey("users")) {
+    if (decoded["users"] != null) {
       users = new List<User>.from(
           decoded["users"].map((data) => User.fromJson(data)));
     }
