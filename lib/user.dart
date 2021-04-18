@@ -8,9 +8,18 @@ class User {
   Keyring _keys;
 
   User(this._email, this._password);
+  User.simple(this._email);
 
   User.fromJson(Map<String, dynamic> json) {
     _email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final map = {
+      "email": _email,
+    };
+
+    return map;
   }
 
   Future<void> register() async {

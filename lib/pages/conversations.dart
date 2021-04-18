@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:echo_client/server.dart';
 import 'package:echo_client/conversation.dart';
+import 'package:echo_client/user.dart';
 
 class ConversationsPage extends StatelessWidget {
   @override
@@ -10,12 +11,58 @@ class ConversationsPage extends StatelessWidget {
         child: ConversationsList(),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => print('Contact added'),
+        onPressed: () async => await addConversation(context),
         tooltip: 'Add contact',
         child: Icon(Icons.add),
       ),
     );
   }
+}
+
+Future<void> addConversation(BuildContext context) {
+  String title;
+  List<String> emails;
+  List<User> participants;
+
+  final inputTitle = Padding(
+    padding: EdgeInsets.all(8.0),
+    child: TextField(
+      onChanged: (text) => title = text,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Name the conversation',
+      ),
+    ),
+  );
+
+  final inputEmails = Padding(
+    padding: EdgeInsets.all(8.0),
+    child: TextField(
+      onChanged: (text) => emails = text.split(' '),
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Enter emails (space-separated)',
+      ),
+    ),
+  );
+
+  final buttonSubmit = TextButton(
+      child: Text('Submit'),
+      onPressed: () {
+        participants =
+            new List<User>.from(emails.map((email) => User.simple(email)));
+        Conversation.create(title, participants);
+        Navigator.pop(context);
+      });
+
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Create a conversation"),
+          children: <Widget>[inputTitle, inputEmails, buttonSubmit],
+        );
+      });
 }
 
 class ConversationsList extends StatelessWidget {
