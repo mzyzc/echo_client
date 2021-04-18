@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
       title: 'Echo',
       initialRoute: '/login',
       routes: {
-        '/': (context) => HomePage(title: 'Echo'),
         '/login': (context) => LoginPage(),
+        '/conversations': (context) => HomePage(title: 'Echo'),
         '/messages': (context) =>
             MessagesPage(ModalRoute.of(context).settings.arguments),
       },

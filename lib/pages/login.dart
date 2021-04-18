@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
       child: Text('Login'),
       onPressed: () async {
         await login();
-        Navigator.pop(context, _email);
+        Navigator.pushReplacementNamed(context, '/conversations');
       },
     );
 
