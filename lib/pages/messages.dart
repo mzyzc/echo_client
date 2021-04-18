@@ -12,7 +12,7 @@ class MessagesPage extends StatelessWidget {
     const altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     final server = new Server();
-    final messagesList = server.messagesTemp(conversation.id).messages;
+    final messagesList = server.getMessages(conversation.id).messages;
     final usersList = server.usersTemp(conversation.id).users;
 
     return Scaffold(

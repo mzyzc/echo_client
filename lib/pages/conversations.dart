@@ -69,7 +69,7 @@ class ConversationsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final server = new Server();
-    final conversationList = server.conversationsTemp().conversations;
+    final conversationList = (await server.getConversations()).conversations;
 
     return Scrollbar(
       child: ListView.separated(

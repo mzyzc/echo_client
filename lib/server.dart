@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:echo_client/dummy_server.dart';
+//import 'package:echo_client/dummy_server.dart';
 import 'package:echo_client/response.dart';
 
 class Server {
@@ -47,15 +47,19 @@ class Server {
     );
   }
 
-  void write(Object data) {
-    this._socket.write(data);
+  Future<Response> write(Object data) async {
+    _socket.write(data);
+
+    Response output = _data;
+    while (output == null) {
+      print(output);
+      output = _data;
+    }
+
+    return output;
   }
 
-  Response read() {
-    return _data;
-  }
-
-  Response messagesTemp(int conversationId) {
+  Future<Response> getMessages(int conversationId) async {
     final request = jsonEncode({
       "function": "READ MESSAGES",
       "conversations": [
@@ -64,21 +68,19 @@ class Server {
         }
       ]
     });
-    write(request);
+    return await write(request);
 
-    return DummyServer.messages;
+    //return DummyServer.messages;
   }
 
-  Response conversationsTemp() {
-    /*
+  Future<Response> getConversations() async {
     final request = jsonEncode({"function": "READ CONVERSATIONS"});
-    write(request);
-    */
+    return await write(request);
 
-    return DummyServer.conversations;
+    //return DummyServer.conversations;
   }
 
-  Response usersTemp(int conversationId) {
+  Future<Response> usersTemp(int conversationId) async {
     final request = jsonEncode({
       "function": "READ USERS",
       "conversations": [
@@ -87,8 +89,8 @@ class Server {
         }
       ]
     });
-    write(request);
+    return await write(request);
 
-    return DummyServer.users;
+    //return DummyServer.users;
   }
 }
