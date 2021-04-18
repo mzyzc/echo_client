@@ -17,52 +17,52 @@ class ConversationsPage extends StatelessWidget {
       ),
     );
   }
-}
 
-Future<void> addConversation(BuildContext context) {
-  String title;
-  List<String> emails;
-  List<User> participants;
+  Future<void> addConversation(BuildContext context) {
+    String title;
+    List<String> emails;
+    List<User> participants;
 
-  final inputTitle = Padding(
-    padding: EdgeInsets.all(8.0),
-    child: TextField(
-      onChanged: (text) => title = text,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Name the conversation',
+    final inputTitle = Padding(
+      padding: EdgeInsets.all(8.0),
+      child: TextField(
+        onChanged: (text) => title = text,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Name the conversation',
+        ),
       ),
-    ),
-  );
+    );
 
-  final inputEmails = Padding(
-    padding: EdgeInsets.all(8.0),
-    child: TextField(
-      onChanged: (text) => emails = text.split(' '),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Enter emails (space-separated)',
+    final inputEmails = Padding(
+      padding: EdgeInsets.all(8.0),
+      child: TextField(
+        onChanged: (text) => emails = text.split(' '),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Enter emails (space-separated)',
+        ),
       ),
-    ),
-  );
+    );
 
-  final buttonSubmit = TextButton(
-      child: Text('Submit'),
-      onPressed: () {
-        participants =
-            new List<User>.from(emails.map((email) => User.simple(email)));
-        Conversation.create(title, participants);
-        Navigator.pop(context);
-      });
+    final buttonSubmit = TextButton(
+        child: Text('Submit'),
+        onPressed: () {
+          participants =
+              new List<User>.from(emails.map((email) => User.simple(email)));
+          Conversation.create(title, participants);
+          Navigator.pop(context);
+        });
 
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text("Create a conversation"),
-          children: <Widget>[inputTitle, inputEmails, buttonSubmit],
-        );
-      });
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Create a conversation"),
+            children: <Widget>[inputTitle, inputEmails, buttonSubmit],
+          );
+        });
+  }
 }
 
 class ConversationsList extends StatelessWidget {
@@ -85,17 +85,17 @@ class ConversationsList extends StatelessWidget {
 }
 
 class ConversationTile extends StatelessWidget {
-  final Conversation data;
+  final Conversation _data;
 
-  const ConversationTile(this.data);
+  const ConversationTile(this._data);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(Icons.person),
-      title: Text(data.name),
+      title: Text(_data.name),
       onTap: () {
-        Navigator.pushNamed(context, '/messages', arguments: data);
+        Navigator.pushNamed(context, '/messages', arguments: _data);
       },
     );
   }

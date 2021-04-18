@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:echo_client/user.dart';
 
 class LoginPage extends StatelessWidget {
-  var email;
-  var password;
-  var authCode;
+  String _email;
+  String _password;
+  String _authCode;
 
   @override
   Widget build(BuildContext context) {
+    Future<void> login() async {
+      final user = User(_email, _password);
+      await user.login();
+    }
+
     final inputEmail = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextField(
-        onChanged: (text) => email = text,
+        onChanged: (text) => _email = text,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Email',
@@ -23,7 +28,7 @@ class LoginPage extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       child: TextField(
         obscureText: true,
-        onChanged: (text) => password = text,
+        onChanged: (text) => _password = text,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Password',
@@ -34,17 +39,16 @@ class LoginPage extends StatelessWidget {
     final buttonLogin = ElevatedButton(
       child: Text('Login'),
       onPressed: () async {
-        final user = User(email, password);
-        await user.login();
-        Navigator.pop(context, email);
+        await login();
+        Navigator.pop(context, _email);
       },
     );
 
     final buttonRegister = TextButton(
         child: Text('Register'),
         onPressed: () async {
-          authCode = await requestAuthCode(context);
-          final user = User(email, password);
+          _authCode = await requestAuthCode(context);
+          final user = User(_email, _password);
           await user.register();
         });
 
@@ -61,7 +65,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<String> requestAuthCode(BuildContext context) {
-    var authCode;
+    String authCode;
 
     final inputAuthCode = Padding(
       padding: EdgeInsets.all(8.0),

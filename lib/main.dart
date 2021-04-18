@@ -34,15 +34,16 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
   final String title;
+
+  const HomePage({Key key, this.title}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  var _selectedIndex = 0;
+  int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
     ConversationsPage(),
@@ -57,12 +58,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final navConversations = BottomNavigationBarItem(
+    const navConversations = BottomNavigationBarItem(
       icon: Icon(Icons.person),
       label: 'Conversations',
     );
 
-    final navSettings = BottomNavigationBarItem(
+    const navSettings = BottomNavigationBarItem(
       icon: Icon(Icons.settings),
       label: 'Settings',
     );

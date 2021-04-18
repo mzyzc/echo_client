@@ -9,7 +9,7 @@ class MessagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final altDirection = [TextDirection.rtl, TextDirection.ltr];
+    const altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     final server = new Server();
     final messagesList = server.messagesTemp(conversation.id).messages;
