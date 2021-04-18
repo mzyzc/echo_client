@@ -65,11 +65,18 @@ class ConversationsPage extends StatelessWidget {
   }
 }
 
-class ConversationsList extends StatelessWidget {
+class ConversationsList extends StatefulWidget {
+  @override
+  _ConversationsListState createState() => _ConversationsListState();
+}
+
+class _ConversationsListState extends State<ConversationsList> {
+  List<Conversation> conversationList;
+
   @override
   Widget build(BuildContext context) {
     final server = new Server();
-    final conversationList = server.conversationsTemp().conversations;
+    conversationList = server.conversationsTemp().conversations;
 
     return Scrollbar(
       child: ListView.separated(

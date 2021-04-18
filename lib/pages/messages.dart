@@ -9,32 +9,52 @@ class MessagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(conversation.name),
+        ),
+        body: Column(children: <Widget>[
+          MessagesList(conversation),
+          Divider(),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: MessageBar(conversation)),
+        ]));
+  }
+}
+
+class MessagesList extends StatefulWidget {
+  final Conversation conversation;
+
+  const MessagesList(this.conversation);
+
+  @override
+  _MessagesListState createState() => _MessagesListState(conversation);
+}
+
+class _MessagesListState extends State<MessagesList> {
+  final Conversation conversation;
+
+  _MessagesListState(this.conversation);
+
+  @override
+  Widget build(BuildContext context) {
     const altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     final server = new Server();
     final messagesList = server.messagesTemp(conversation.id).messages;
     final usersList = server.usersTemp(conversation.id).users;
 
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(conversation.name),
-        ),
-        body: Column(children: <Widget>[
-          Expanded(
-              child: Scrollbar(
-                  child: ListView.builder(
-                      reverse: true,
-                      itemCount: messagesList.length,
-                      itemBuilder: (context, index) {
-                        return Directionality(
-                            textDirection: altDirection[index % 2],
-                            child: MessageTile(messagesList[index]));
-                      }))),
-          Divider(),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: MessageBar(conversation)),
-        ]));
+    return Expanded(
+        child: Scrollbar(
+            child: ListView.builder(
+                reverse: true,
+                itemCount: messagesList.length,
+                itemBuilder: (context, index) {
+                  return Directionality(
+                      textDirection: altDirection[index % 2],
+                      child: MessageTile(messagesList[index]));
+                })));
   }
 }
 
