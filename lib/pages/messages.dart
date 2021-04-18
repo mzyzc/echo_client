@@ -9,7 +9,6 @@ class MessagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var messageText;
     final altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     final server = new Server();
@@ -28,35 +27,57 @@ class MessagesPage extends StatelessWidget {
                       itemCount: messagesList.length,
                       itemBuilder: (context, index) {
                         return Directionality(
-                          textDirection: altDirection[index % 2],
-                          child: ListTile(
-                            title: Text(messagesList[index].messageData),
-                            subtitle: Text(messagesList[index].timeSent),
-                          ),
-                        );
+                            textDirection: altDirection[index % 2],
+                            child: MessageTile(messagesList[index]));
                       }))),
           Divider(),
           Align(
               alignment: Alignment.bottomCenter,
-              child: Row(children: <Widget>[
-                Expanded(
-                    child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                      onChanged: (text) => messageText = text,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Write a message...',
-                      )),
-                )),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    child: Icon(Icons.send),
-                    onPressed: () => newMessage(messageText, conversation.id),
-                  ),
-                )
-              ])),
+              child: MessageBar(conversation)),
         ]));
+  }
+}
+
+class MessageTile extends StatelessWidget {
+  final Message data;
+
+  const MessageTile(this.data);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(data.messageData),
+      subtitle: Text(data.timeSent),
+    );
+  }
+}
+
+class MessageBar extends StatelessWidget {
+  String messageText;
+  final Conversation conversation;
+
+  MessageBar(this.conversation);
+
+  @override
+  Widget build(BuildContext build) {
+    return Row(children: <Widget>[
+      Expanded(
+          child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: TextField(
+            onChanged: (text) => messageText = text,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Write a message...',
+            )),
+      )),
+      Padding(
+        padding: EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          child: Icon(Icons.send),
+          onPressed: () => newMessage(messageText, conversation.id),
+        ),
+      )
+    ]);
   }
 }

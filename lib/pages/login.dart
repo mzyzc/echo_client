@@ -59,33 +59,33 @@ class LoginPage extends StatelessWidget {
           ]),
     );
   }
-}
 
-Future<String> requestAuthCode(BuildContext context) {
-  var authCode;
+  Future<String> requestAuthCode(BuildContext context) {
+    var authCode;
 
-  final inputAuthCode = Padding(
-    padding: EdgeInsets.all(8.0),
-    child: TextField(
-      onChanged: (text) => authCode = text,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Authentication code',
+    final inputAuthCode = Padding(
+      padding: EdgeInsets.all(8.0),
+      child: TextField(
+        onChanged: (text) => authCode = text,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Authentication code',
+        ),
       ),
-    ),
-  );
+    );
 
-  final buttonSubmit = TextButton(
-    child: Text('Submit'),
-    onPressed: () => Navigator.pop(context, authCode),
-  );
+    final buttonSubmit = TextButton(
+      child: Text('Submit'),
+      onPressed: () => Navigator.pop(context, authCode),
+    );
 
-  return showDialog(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text("Authentication Code"),
-          children: <Widget>[inputAuthCode, buttonSubmit],
-        );
-      });
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Authentication Code"),
+            children: <Widget>[inputAuthCode, buttonSubmit],
+          );
+        });
+  }
 }

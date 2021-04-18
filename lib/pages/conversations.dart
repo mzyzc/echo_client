@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:echo_client/server.dart';
+import 'package:echo_client/conversation.dart';
 
 class ConversationsPage extends StatelessWidget {
   @override
@@ -27,19 +28,28 @@ class ConversationsList extends StatelessWidget {
       child: ListView.separated(
         itemCount: conversationList.length,
         itemBuilder: (context, index) {
-          return Column(children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text(conversationList[index].name),
-              onTap: () {
-                Navigator.pushNamed(context, '/messages',
-                    arguments: conversationList[index]);
-              },
-            )
-          ]);
+          return Column(
+              children: <Widget>[ConversationTile(conversationList[index])]);
         },
         separatorBuilder: (context, index) => const Divider(),
       ),
+    );
+  }
+}
+
+class ConversationTile extends StatelessWidget {
+  final Conversation data;
+
+  const ConversationTile(this.data);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.person),
+      title: Text(data.name),
+      onTap: () {
+        Navigator.pushNamed(context, '/messages', arguments: data);
+      },
     );
   }
 }
