@@ -71,7 +71,6 @@ class ConversationsList extends StatefulWidget {
 }
 
 class _ConversationsListState extends State<ConversationsList> {
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
   List<Conversation> _conversationList = [];
 
   Future<void> refresh() async {

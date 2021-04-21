@@ -24,10 +24,8 @@ class Conversation {
           _participants.map((user) => user.toJson())),
     });
 
-    print(request);
-
     final server = new Server();
-    final response = server.send(request);
+    server.send(request);
   }
 
   int get id {

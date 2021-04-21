@@ -34,7 +34,6 @@ class MessagesList extends StatefulWidget {
 }
 
 class _MessagesListState extends State<MessagesList> {
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
   final Conversation conversation;
   List<Message> _messagesList = [];
   List<User> _usersList = [];

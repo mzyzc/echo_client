@@ -11,11 +11,10 @@ class Message {
 
   Message.fromJson(Map<String, dynamic> json) {
     _data = utf8.encode(base64.encode(json['data'].cast<int>()));
-    //_data = utf8.encode(json['data']);
     _mediaType = base64.encode(json['mediaType'].cast<int>());
     //_signature = Signature(json['signature'], publicKey: ???);
-    _timestamp = new DateTime.now();
     //_timestamp = DateTime.parse(base64.encode(json['timestamp'].cast<int>()));
+    _timestamp = new DateTime.now();
   }
 
   Message.compose(List<int> data, String mediaType) {
@@ -30,21 +29,6 @@ class Message {
 
   String get timeSent {
     return _timestamp.toString();
-  }
-
-  //static Future<List<Message>> fetch(int conversationId) async {
-  static Future<void> fetch(int conversationId) async {
-    final request = jsonEncode({
-      "function": "READ MESSAGES",
-      "conversations": [
-        {
-          "id": conversationId,
-        }
-      ]
-    });
-
-    final server = new Server();
-    final response = server.send(request);
   }
 
   Future<List<int>> _convert(List<int> data, SecretKey sessionKey) async {
@@ -95,7 +79,7 @@ class Message {
     });
 
     final server = new Server();
-    final response = server.send(request);
+    server.send(request);
   }
 }
 

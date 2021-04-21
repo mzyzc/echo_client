@@ -15,11 +15,9 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final map = {
+    return {
       "email": _email,
     };
-
-    return map;
   }
 
   Future<void> register() async {
@@ -40,7 +38,7 @@ class User {
     });
 
     final server = new Server();
-    final response = server.send(data);
+    server.send(data);
   }
 
   Future<void> login() async {
@@ -55,6 +53,6 @@ class User {
     });
 
     final server = new Server();
-    final response = server.send(data);
+    server.send(data);
   }
 }
