@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:echo_client/server.dart';
 import 'package:echo_client/message.dart';
+import 'package:echo_client/user.dart';
 import 'package:echo_client/conversation.dart';
 
 class MessagesPage extends StatelessWidget {
@@ -34,26 +35,36 @@ class MessagesList extends StatefulWidget {
 
 class _MessagesListState extends State<MessagesList> {
   final Conversation conversation;
+  List<Message> _messagesList = [];
+  List<User> _usersList = [];
 
   _MessagesListState(this.conversation);
+
+  Future<void> getData() async {
+    final server = new Server();
+    _messagesList = (await server.getMessages(conversation.id)).messages;
+    _usersList = (await server.getUsers(conversation.id)).users;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
     const altDirection = [TextDirection.rtl, TextDirection.ltr];
 
-    final server = new Server();
-    final messagesList = server.messagesTemp(conversation.id).messages;
-    final usersList = server.usersTemp(conversation.id).users;
-
     return Expanded(
         child: Scrollbar(
             child: ListView.builder(
                 reverse: true,
-                itemCount: messagesList.length,
+                itemCount: _messagesList.length,
                 itemBuilder: (context, index) {
                   return Directionality(
                       textDirection: altDirection[index % 2],
-                      child: MessageTile(messagesList[index]));
+                      child: MessageTile(_messagesList[index]));
                 })));
   }
 }

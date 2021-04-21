@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:echo_client/dummy_server.dart';
+//import 'package:echo_client/dummy_server.dart';
 import 'package:echo_client/response.dart';
+import 'package:echo_client/user.dart';
+import 'package:echo_client/conversation.dart';
+import 'package:echo_client/message.dart';
 
 class Server {
   // Initialize singleton
@@ -17,7 +20,6 @@ class Server {
   int _port;
   SecureSocket _socket;
   Stream _stream;
-  Response _data;
 
   void connect(String host, int port) async {
     _host = host;
@@ -35,27 +37,13 @@ class Server {
   }
 
   Future<Response> send(Object data) async {
-    /*
-    var subscription = await _socket.listen(
-      (List<int> response) {
-        print(String.fromCharCodes(response));
-        _data = Response(response);
-      },
-      onError: (error) {
-        print(error);
-        _socket.destroy();
-        connect(_host, _port);
-      },
-    );
-    */
-
     this._socket.write(data);
     List<int> response = await _stream.first;
 
     return Response(response);
   }
 
-  Response messagesTemp(int conversationId) {
+  Future<Response> getMessages(int conversationId) async {
     final request = jsonEncode({
       "function": "READ MESSAGES",
       "conversations": [
@@ -64,21 +52,15 @@ class Server {
         }
       ]
     });
-    send(request);
-
-    return DummyServer.messages;
+    return await send(request);
   }
 
-  Response conversationsTemp() {
-    /*
+  Future<Response> getConversations() async {
     final request = jsonEncode({"function": "READ CONVERSATIONS"});
-    send(request);
-    */
-
-    return DummyServer.conversations;
+    return await send(request);
   }
 
-  Response usersTemp(int conversationId) {
+  Future<Response> getUsers(int conversationId) async {
     final request = jsonEncode({
       "function": "READ USERS",
       "conversations": [
@@ -87,8 +69,6 @@ class Server {
         }
       ]
     });
-    send(request);
-
-    return DummyServer.users;
+    return await send(request);
   }
 }

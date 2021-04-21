@@ -71,19 +71,27 @@ class ConversationsList extends StatefulWidget {
 }
 
 class _ConversationsListState extends State<ConversationsList> {
-  List<Conversation> conversationList;
+  List<Conversation> _conversationList = [];
+
+  Future<void> getData() async {
+    final server = new Server();
+    _conversationList = (await server.getConversations()).conversations;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final server = new Server();
-    conversationList = server.conversationsTemp().conversations;
-
     return Scrollbar(
       child: ListView.separated(
-        itemCount: conversationList.length,
+        itemCount: _conversationList.length,
         itemBuilder: (context, index) {
           return Column(
-              children: <Widget>[ConversationTile(conversationList[index])]);
+              children: <Widget>[ConversationTile(_conversationList[index])]);
         },
         separatorBuilder: (context, index) => const Divider(),
       ),
