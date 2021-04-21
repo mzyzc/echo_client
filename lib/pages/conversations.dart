@@ -73,7 +73,7 @@ class ConversationsList extends StatefulWidget {
 class _ConversationsListState extends State<ConversationsList> {
   List<Conversation> _conversationList = [];
 
-  Future<void> getData() async {
+  Future<void> refresh() async {
     final server = new Server();
     _conversationList = (await server.getConversations()).conversations;
   }
@@ -81,7 +81,7 @@ class _ConversationsListState extends State<ConversationsList> {
   @override
   void initState() {
     super.initState();
-    getData();
+    setState(() => refresh);
   }
 
   @override

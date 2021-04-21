@@ -37,8 +37,11 @@ class Server {
   }
 
   Future<Response> send(Object data) async {
+    print('stage 1');
     this._socket.write(data);
+    print('stage 2');
     List<int> response = await _stream.first;
+    print('stage 3');
 
     return Response(response);
   }

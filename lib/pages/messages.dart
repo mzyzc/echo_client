@@ -40,7 +40,7 @@ class _MessagesListState extends State<MessagesList> {
 
   _MessagesListState(this.conversation);
 
-  Future<void> getData() async {
+  Future<void> refresh() async {
     final server = new Server();
     _messagesList = (await server.getMessages(conversation.id)).messages;
     _usersList = (await server.getUsers(conversation.id)).users;
@@ -49,7 +49,7 @@ class _MessagesListState extends State<MessagesList> {
   @override
   void initState() {
     super.initState();
-    getData();
+    setState(() => refresh);
   }
 
   @override
