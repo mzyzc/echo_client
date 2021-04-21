@@ -10,7 +10,7 @@ class Response {
   List<User> users;
 
   Response(List<int> data) {
-    final dataString = String.fromCharCodes(data);
+    final dataString = utf8.decode(data);
     final decoded = jsonDecode(dataString);
 
     if (decoded.containsKey("status")) {

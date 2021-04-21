@@ -71,31 +71,36 @@ class ConversationsList extends StatefulWidget {
 }
 
 class _ConversationsListState extends State<ConversationsList> {
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   List<Conversation> _conversationList = [];
 
   Future<void> refresh() async {
     final server = new Server();
-    _conversationList = (await server.getConversations()).conversations;
+    final conversations = (await server.getConversations()).conversations;
+    setState(() => _conversationList = conversations);
   }
 
   @override
   void initState() {
     super.initState();
-    setState(() => refresh);
+    refresh();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      child: ListView.separated(
-        itemCount: _conversationList.length,
-        itemBuilder: (context, index) {
-          return Column(
-              children: <Widget>[ConversationTile(_conversationList[index])]);
-        },
-        separatorBuilder: (context, index) => const Divider(),
-      ),
-    );
+    return RefreshIndicator(
+        child: Scrollbar(
+          child: ListView.separated(
+            itemCount: _conversationList.length,
+            itemBuilder: (context, index) {
+              return Column(children: <Widget>[
+                ConversationTile(_conversationList[index])
+              ]);
+            },
+            separatorBuilder: (context, index) => const Divider(),
+          ),
+        ),
+        onRefresh: refresh);
   }
 }
 

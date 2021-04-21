@@ -34,6 +34,7 @@ class MessagesList extends StatefulWidget {
 }
 
 class _MessagesListState extends State<MessagesList> {
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
   final Conversation conversation;
   List<Message> _messagesList = [];
   List<User> _usersList = [];
@@ -42,14 +43,18 @@ class _MessagesListState extends State<MessagesList> {
 
   Future<void> refresh() async {
     final server = new Server();
-    _messagesList = (await server.getMessages(conversation.id)).messages;
-    _usersList = (await server.getUsers(conversation.id)).users;
+    final messages = (await server.getMessages(conversation.id)).messages;
+    final users = (await server.getUsers(conversation.id)).users;
+    setState(() {
+      _messagesList = messages;
+      _usersList = users;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    setState(() => refresh);
+    refresh();
   }
 
   @override
@@ -57,15 +62,20 @@ class _MessagesListState extends State<MessagesList> {
     const altDirection = [TextDirection.rtl, TextDirection.ltr];
 
     return Expanded(
+      child: RefreshIndicator(
         child: Scrollbar(
             child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
                 reverse: true,
                 itemCount: _messagesList.length,
                 itemBuilder: (context, index) {
                   return Directionality(
                       textDirection: altDirection[index % 2],
                       child: MessageTile(_messagesList[index]));
-                })));
+                })),
+        onRefresh: refresh,
+      ),
+    );
   }
 }
 

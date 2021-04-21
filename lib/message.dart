@@ -10,10 +10,12 @@ class Message {
   DateTime _timestamp;
 
   Message.fromJson(Map<String, dynamic> json) {
-    _data = utf8.encode(json['data']);
-    _mediaType = json['mediaType'];
+    _data = utf8.encode(base64.encode(json['data'].cast<int>()));
+    //_data = utf8.encode(json['data']);
+    _mediaType = base64.encode(json['mediaType'].cast<int>());
     //_signature = Signature(json['signature'], publicKey: ???);
-    _timestamp = DateTime.parse(json['timestamp']);
+    _timestamp = new DateTime.now();
+    //_timestamp = DateTime.parse(base64.encode(json['timestamp'].cast<int>()));
   }
 
   Message.compose(List<int> data, String mediaType) {

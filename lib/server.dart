@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-//import 'package:echo_client/dummy_server.dart';
 import 'package:echo_client/response.dart';
-import 'package:echo_client/user.dart';
-import 'package:echo_client/conversation.dart';
-import 'package:echo_client/message.dart';
 
 class Server {
   // Initialize singleton
@@ -37,11 +33,8 @@ class Server {
   }
 
   Future<Response> send(Object data) async {
-    print('stage 1');
     this._socket.write(data);
-    print('stage 2');
     List<int> response = await _stream.first;
-    print('stage 3');
 
     return Response(response);
   }
