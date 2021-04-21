@@ -40,7 +40,7 @@ class User {
     });
 
     final server = new Server();
-    server.write(data);
+    final response = server.send(data);
   }
 
   Future<void> login() async {
@@ -55,6 +55,6 @@ class User {
     });
 
     final server = new Server();
-    server.write(data);
+    final response = server.send(data);
   }
 }

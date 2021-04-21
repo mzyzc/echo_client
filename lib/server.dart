@@ -16,6 +16,7 @@ class Server {
   String _host;
   int _port;
   SecureSocket _socket;
+  Stream _stream;
   Response _data;
 
   void connect(String host, int port) async {
@@ -30,29 +31,28 @@ class Server {
 
     print('Connected to $host:${_socket.remotePort}');
 
-    _socket.listen(
-      (List<int> response) async {
+    _stream = _socket.asBroadcastStream();
+  }
+
+  Future<Response> send(Object data) async {
+    /*
+    var subscription = await _socket.listen(
+      (List<int> response) {
         print(String.fromCharCodes(response));
         _data = Response(response);
       },
       onError: (error) {
         print(error);
         _socket.destroy();
-        connect(host, port);
-      },
-      onDone: () {
-        _socket.destroy();
-        connect(host, port);
+        connect(_host, _port);
       },
     );
-  }
+    */
 
-  void write(Object data) {
     this._socket.write(data);
-  }
+    List<int> response = await _stream.first;
 
-  Response read() {
-    return _data;
+    return Response(response);
   }
 
   Response messagesTemp(int conversationId) {
@@ -64,7 +64,7 @@ class Server {
         }
       ]
     });
-    write(request);
+    send(request);
 
     return DummyServer.messages;
   }
@@ -72,7 +72,7 @@ class Server {
   Response conversationsTemp() {
     /*
     final request = jsonEncode({"function": "READ CONVERSATIONS"});
-    write(request);
+    send(request);
     */
 
     return DummyServer.conversations;
@@ -87,7 +87,7 @@ class Server {
         }
       ]
     });
-    write(request);
+    send(request);
 
     return DummyServer.users;
   }

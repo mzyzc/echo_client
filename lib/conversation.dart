@@ -27,7 +27,7 @@ class Conversation {
     print(request);
 
     final server = new Server();
-    server.write(request);
+    final response = server.send(request);
   }
 
   int get id {
