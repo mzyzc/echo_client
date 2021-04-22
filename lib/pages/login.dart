@@ -7,6 +7,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   String _email;
   String _password;
   String _authCode;
@@ -20,60 +21,74 @@ class _LoginPageState extends State<LoginPage> {
 
     final inputEmail = Padding(
       padding: EdgeInsets.all(8.0),
-      child: TextField(
-        onChanged: (text) => _email = text,
+      child: TextFormField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'Email',
+          labelText: 'Email *',
         ),
+        onSaved: (text) => _email = text,
+        validator: (text) {
+          if (text == null || text.isEmpty) {
+            return 'This field is required';
+          } else if (!isValidEmail(text)) {
+            return 'Invalid email address';
+          }
+          return null;
+        },
       ),
     );
 
     final inputPassword = Padding(
       padding: EdgeInsets.all(8.0),
-      child: TextField(
+      child: TextFormField(
         obscureText: true,
-        onChanged: (text) => _password = text,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'Password',
+          labelText: 'Password *',
         ),
+        onSaved: (text) => _password = text,
+        validator: (text) {
+          if (text == null || text.isEmpty) {
+            return 'This field is required';
+          }
+          return null;
+        },
       ),
     );
 
     final buttonLogin = ElevatedButton(
       child: Text('Login'),
       onPressed: () async {
-        if (!isValidEmail(_email)) {
-          print('Invalid email address');
-          return;
+        if (_formKey.currentState.validate()) {
+          await login();
+          Navigator.pushReplacementNamed(context, '/conversations');
         }
-        await login();
-        Navigator.pushReplacementNamed(context, '/conversations');
       },
     );
 
     final buttonRegister = TextButton(
         child: Text('Register'),
         onPressed: () async {
-          _authCode = await requestAuthCode(context);
-          if (!isValidEmail(_email)) {
-            print('Invalid email address');
-            return;
+          if (_formKey.currentState.validate()) {
+            _authCode = await requestAuthCode(context);
+            final user = User(_email, _password);
+            await user.register();
           }
-          final user = User(_email, _password);
-          await user.register();
         });
 
     return Scaffold(
-      body: Column(
+      body: Form(
+        key: _formKey,
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             inputEmail,
             inputPassword,
             buttonRegister,
             buttonLogin
-          ]),
+          ],
+        ),
+      ),
     );
   }
 
