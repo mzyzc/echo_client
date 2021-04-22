@@ -39,6 +39,10 @@ class LoginPage extends StatelessWidget {
     final buttonLogin = ElevatedButton(
       child: Text('Login'),
       onPressed: () async {
+        if (!isValidEmail(_email)) {
+          print('Invalid email address');
+          return;
+        }
         await login();
         Navigator.pushReplacementNamed(context, '/conversations');
       },
@@ -48,6 +52,10 @@ class LoginPage extends StatelessWidget {
         child: Text('Register'),
         onPressed: () async {
           _authCode = await requestAuthCode(context);
+          if (!isValidEmail(_email)) {
+            print('Invalid email address');
+            return;
+          }
           final user = User(_email, _password);
           await user.register();
         });
@@ -62,6 +70,12 @@ class LoginPage extends StatelessWidget {
             buttonLogin
           ]),
     );
+  }
+
+  bool isValidEmail(String email) {
+    // TODO: stop using regular expressions to parse emails
+    final parser = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    return parser.hasMatch(email);
   }
 
   Future<String> requestAuthCode(BuildContext context) {
