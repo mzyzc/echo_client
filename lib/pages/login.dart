@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:echo_client/user.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
   String _authCode;

@@ -92,11 +92,20 @@ class MessageTile extends StatelessWidget {
   }
 }
 
-class MessageBar extends StatelessWidget {
+class MessageBar extends StatefulWidget {
+  final Conversation _conversation;
+
+  const MessageBar(this._conversation);
+
+  @override
+  _MessageBarState createState() => _MessageBarState(_conversation);
+}
+
+class _MessageBarState extends State<MessageBar> {
   String messageText;
   final Conversation conversation;
 
-  MessageBar(this.conversation);
+  _MessageBarState(this.conversation);
 
   @override
   Widget build(BuildContext build) {
