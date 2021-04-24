@@ -19,6 +19,11 @@ class _LoginPageState extends State<LoginPage> {
       await user.login();
     }
 
+    Future<void> register() async {
+      final user = User(_email, _password);
+      await user.register();
+    }
+
     final inputEmail = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextFormField(
@@ -26,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
           border: OutlineInputBorder(),
           labelText: 'Email *',
         ),
-        onSaved: (text) => _email = text,
+        onChanged: (text) => _email = text,
         validator: (text) {
           if (text == null || text.isEmpty) {
             return 'This field is required';
@@ -46,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
           border: OutlineInputBorder(),
           labelText: 'Password *',
         ),
-        onSaved: (text) => _password = text,
+        onChanged: (text) => _password = text,
         validator: (text) {
           if (text == null || text.isEmpty) {
             return 'This field is required';
@@ -60,8 +65,12 @@ class _LoginPageState extends State<LoginPage> {
       child: Text('Login'),
       onPressed: () async {
         if (_formKey.currentState.validate()) {
-          await login();
-          Navigator.pushReplacementNamed(context, '/conversations');
+          try {
+            await login();
+            Navigator.pushReplacementNamed(context, '/conversations');
+          } catch (e) {
+            displayError(context, e);
+          }
         }
       },
     );
@@ -70,9 +79,12 @@ class _LoginPageState extends State<LoginPage> {
         child: Text('Register'),
         onPressed: () async {
           if (_formKey.currentState.validate()) {
-            _authCode = await requestAuthCode(context);
-            final user = User(_email, _password);
-            await user.register();
+            try {
+              _authCode = await requestAuthCode(context);
+              await register();
+            } catch (e) {
+              displayError(context, e);
+            }
           }
         });
 
@@ -123,6 +135,17 @@ class _LoginPageState extends State<LoginPage> {
           return SimpleDialog(
             title: Text("Authentication Code"),
             children: <Widget>[inputAuthCode, buttonSubmit],
+          );
+        });
+  }
+
+  Future<void> displayError(BuildContext context, Exception error) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(error.toString()),
           );
         });
   }

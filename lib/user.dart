@@ -38,7 +38,11 @@ class User {
     });
 
     final server = new Server();
-    server.send(data);
+    final response = await server.send(data);
+
+    if (!response.isValid()) {
+      throw Exception('Server rejected this request');
+    }
   }
 
   Future<void> login() async {
@@ -53,6 +57,10 @@ class User {
     });
 
     final server = new Server();
-    server.send(data);
+    final response = await server.send(data);
+
+    if (!response.isValid()) {
+      throw Exception('Server rejected this request');
+    }
   }
 }

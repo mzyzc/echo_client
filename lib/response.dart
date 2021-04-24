@@ -29,4 +29,8 @@ class Response {
           decoded["users"].map((data) => User.fromJson(data)));
     }
   }
+
+  bool isValid() {
+    return (status == 1);
+  }
 }
