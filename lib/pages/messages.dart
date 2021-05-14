@@ -5,15 +5,43 @@ import 'package:echo_client/user.dart';
 import 'package:echo_client/conversation.dart';
 
 class MessagesPage extends StatelessWidget {
+  final server = new Server();
   final Conversation conversation;
   MessagesPage(this.conversation);
+
+  Future<void> listUsers(BuildContext context) async {
+    final users = (await server.getUsers(conversation.id)).users;
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text("Participants"),
+              content: Container(
+                width: double.maxFinite,
+                child: Scrollbar(
+                  child: ListView.separated(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      return Column(children: <Widget>[UserTile(users[index])]);
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
+                  ),
+                ),
+              ));
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(conversation.name),
-        ),
+        appBar: AppBar(title: Text(conversation.name), actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.people),
+            tooltip: 'View participants',
+            onPressed: () async => await listUsers(context),
+          )
+        ]),
         body: Column(children: <Widget>[
           MessagesList(conversation),
           Divider(),
@@ -36,17 +64,14 @@ class MessagesList extends StatefulWidget {
 class _MessagesListState extends State<MessagesList> {
   final Conversation conversation;
   List<Message> _messagesList = [];
-  List<User> _usersList = [];
 
   _MessagesListState(this.conversation);
 
   Future<void> refresh() async {
     final server = new Server();
     final messages = (await server.getMessages(conversation.id)).messages;
-    final users = (await server.getUsers(conversation.id)).users;
     setState(() {
       _messagesList = messages;
-      _usersList = users;
     });
   }
 
@@ -128,5 +153,19 @@ class _MessageBarState extends State<MessageBar> {
         ),
       )
     ]);
+  }
+}
+
+class UserTile extends StatelessWidget {
+  final User _data;
+
+  const UserTile(this._data);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.person),
+      title: Text(_data.email),
+    );
   }
 }

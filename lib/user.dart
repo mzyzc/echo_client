@@ -20,6 +20,10 @@ class User {
     };
   }
 
+  String get email {
+    return _email;
+  }
+
   Future<void> register() async {
     _keys = new Keyring();
     await _keys.genKeys();
