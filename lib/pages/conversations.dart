@@ -3,6 +3,7 @@ import 'package:echo_client/server.dart';
 import 'package:echo_client/conversation.dart';
 import 'package:echo_client/user.dart';
 
+// A list of conversations a user is in
 class ConversationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,13 @@ class ConversationsPage extends StatelessWidget {
     );
   }
 
+  // Adding a user to a conversation
   Future<void> addConversation(BuildContext context) {
     String title;
     List<String> emails;
     List<User> participants;
 
+    // Title input for a dialog
     final inputTitle = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextField(
@@ -34,6 +37,7 @@ class ConversationsPage extends StatelessWidget {
       ),
     );
 
+    // Email input for a dialog
     final inputEmails = Padding(
       padding: EdgeInsets.all(8.0),
       child: TextField(
@@ -45,6 +49,7 @@ class ConversationsPage extends StatelessWidget {
       ),
     );
 
+    // Submit button for a dialog
     final buttonSubmit = TextButton(
         child: Text('Submit'),
         onPressed: () {
@@ -70,6 +75,7 @@ class ConversationsList extends StatefulWidget {
   _ConversationsListState createState() => _ConversationsListState();
 }
 
+// Manages changes in user's list of conversations
 class _ConversationsListState extends State<ConversationsList> {
   List<Conversation> _conversationList = [];
 
@@ -103,6 +109,7 @@ class _ConversationsListState extends State<ConversationsList> {
   }
 }
 
+// Representation of a single conversation
 class ConversationTile extends StatelessWidget {
   final Conversation _data;
 

@@ -9,6 +9,7 @@ class Response {
   List<Message> messages;
   List<User> users;
 
+  // Create a response object from JSON
   Response(List<int> data) {
     final dataString = utf8.decode(data);
     final decoded = jsonDecode(dataString);
@@ -30,6 +31,7 @@ class Response {
     }
   }
 
+  // Check if a request has an acceptable status code
   bool isValid() {
     return (status == 1);
   }
