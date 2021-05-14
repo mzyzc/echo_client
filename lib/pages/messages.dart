@@ -128,10 +128,16 @@ class MessageBar extends StatefulWidget {
 }
 
 class _MessageBarState extends State<MessageBar> {
-  String messageText;
+  final _textController = TextEditingController();
   final Conversation conversation;
 
   _MessageBarState(this.conversation);
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext build) {
@@ -140,7 +146,7 @@ class _MessageBarState extends State<MessageBar> {
           child: Padding(
         padding: EdgeInsets.all(8.0),
         child: TextField(
-            onChanged: (text) => messageText = text,
+            controller: _textController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Write a message...',
@@ -149,9 +155,13 @@ class _MessageBarState extends State<MessageBar> {
       Padding(
         padding: EdgeInsets.all(8.0),
         child: ElevatedButton(
-          child: Icon(Icons.send),
-          onPressed: () => newMessage(messageText, conversation.id),
-        ),
+            child: Icon(Icons.send),
+            onPressed: () {
+              if (_textController.text != '') {
+                newMessage(_textController.text, conversation.id);
+              }
+              _textController.clear();
+            }),
       )
     ]);
   }
