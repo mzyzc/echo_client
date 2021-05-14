@@ -25,6 +25,9 @@ class User {
   }
 
   Future<void> register() async {
+    final server = new Server();
+    server.user = _email;
+
     _keys = new Keyring();
     await _keys.genKeys();
     await _keys.export();
@@ -41,7 +44,6 @@ class User {
       ]
     });
 
-    final server = new Server();
     final response = await server.send(data);
 
     if (!response.isValid()) {
@@ -50,6 +52,9 @@ class User {
   }
 
   Future<void> login() async {
+    final server = new Server();
+    server.user = _email;
+
     final data = jsonEncode({
       "function": "VERIFY USERS",
       'users': [
@@ -60,13 +65,10 @@ class User {
       ]
     });
 
-    final server = new Server();
     final response = await server.send(data);
 
     if (!response.isValid()) {
       throw Exception('Server rejected this request');
     }
-
-    server.user = _email;
   }
 }

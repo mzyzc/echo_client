@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:cryptography/cryptography.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:echo_client/server.dart';
 
 class Keyring {
   KeyPair exchangePair;
@@ -38,9 +39,12 @@ class Keyring {
 
   Future<void> import() async {
     final dataDir = await getApplicationSupportDirectory();
+    final server = new Server();
 
-    final exchangeFile = File('${dataDir.path}/exchangeSeed.key');
-    final signatureFile = File('${dataDir.path}/signatureSeed.key');
+    final exchangeFile =
+        File('${dataDir.path}/${server.user}-exchangeSeed.key');
+    final signatureFile =
+        File('${dataDir.path}/${server.user}-signatureSeed.key');
 
     final exchangeFileBytes = await exchangeFile.readAsBytes();
     final signatureFileBytes = await signatureFile.readAsBytes();
@@ -51,9 +55,12 @@ class Keyring {
 
   Future<void> export() async {
     final dataDir = await getApplicationSupportDirectory();
+    final server = new Server();
 
-    final exchangeFile = File('${dataDir.path}/exchangeSeed.key');
-    final signatureFile = File('${dataDir.path}/signatureSeed.key');
+    final exchangeFile =
+        File('${dataDir.path}/${server.user}-exchangeSeed.key');
+    final signatureFile =
+        File('${dataDir.path}/${server.user}-signatureSeed.key');
 
     await exchangeFile.writeAsBytes(_exchangeSeed);
     await signatureFile.writeAsBytes(_signatureSeed);
