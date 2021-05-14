@@ -93,9 +93,10 @@ class _MessagesListState extends State<MessagesList> {
                 reverse: true,
                 itemCount: _messagesList.length,
                 itemBuilder: (context, index) {
+                  final reversedIndex = _messagesList.length - index - 1;
                   return Directionality(
-                      textDirection: altDirection[index % 2],
-                      child: MessageTile(_messagesList[index]));
+                      textDirection: altDirection[reversedIndex % 2],
+                      child: MessageTile(_messagesList[reversedIndex]));
                 })),
         onRefresh: refresh,
       ),
