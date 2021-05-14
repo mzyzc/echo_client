@@ -66,5 +66,7 @@ class User {
     if (!response.isValid()) {
       throw Exception('Server rejected this request');
     }
+
+    server.user = _email;
   }
 }

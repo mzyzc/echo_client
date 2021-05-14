@@ -14,6 +14,7 @@ class Server {
 
   String _host;
   int _port;
+  String user;
   SecureSocket _socket;
   Stream _stream;
 

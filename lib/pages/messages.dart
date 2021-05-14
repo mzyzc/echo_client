@@ -62,17 +62,25 @@ class MessagesList extends StatefulWidget {
 }
 
 class _MessagesListState extends State<MessagesList> {
+  final server = new Server();
   final Conversation conversation;
   List<Message> _messagesList = [];
 
   _MessagesListState(this.conversation);
 
   Future<void> refresh() async {
-    final server = new Server();
     final messages = (await server.getMessages(conversation.id)).messages;
     setState(() {
       _messagesList = messages;
     });
+  }
+
+  TextDirection getDirection(Message message) {
+    if (message.sender == server.user) {
+      return TextDirection.rtl;
+    } else {
+      return TextDirection.ltr;
+    }
   }
 
   @override
@@ -83,8 +91,6 @@ class _MessagesListState extends State<MessagesList> {
 
   @override
   Widget build(BuildContext context) {
-    const altDirection = [TextDirection.rtl, TextDirection.ltr];
-
     return Expanded(
       child: RefreshIndicator(
         child: Scrollbar(
@@ -95,7 +101,7 @@ class _MessagesListState extends State<MessagesList> {
                 itemBuilder: (context, index) {
                   final reversedIndex = _messagesList.length - index - 1;
                   return Directionality(
-                      textDirection: altDirection[reversedIndex % 2],
+                      textDirection: getDirection(_messagesList[reversedIndex]),
                       child: MessageTile(_messagesList[reversedIndex]));
                 })),
         onRefresh: refresh,

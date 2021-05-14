@@ -8,6 +8,7 @@ class Message {
   String _mediaType;
   Signature _signature;
   DateTime _timestamp;
+  String _sender;
 
   Message.fromJson(Map<String, dynamic> json) {
     _data = utf8.encode(base64.encode(json['data'].cast<int>()));
@@ -15,6 +16,11 @@ class Message {
     //_signature = Signature(json['signature'], publicKey: ???);
     //_timestamp = DateTime.parse(base64.encode(json['timestamp'].cast<int>()));
     _timestamp = new DateTime.now();
+    _sender = json['sender'];
+  }
+
+  String get sender {
+    return _sender;
   }
 
   Message.compose(List<int> data, String mediaType) {
